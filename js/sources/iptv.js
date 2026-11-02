@@ -5,11 +5,13 @@ const IptvSource = (() => {
   const KEY = 'rs:iptv';
   const EXTRA = { name: 'Brasil (iptv-com)', url: 'https://raw.githubusercontent.com/iptv-com/iptv/main/lists/brazil.m3u' };
   const CAT = { name: 'Brasil (iptvcat)', url: 'lists/brasil-iptvcat.m3u' };
-  const DEFAULT = [{ name: 'Canais abertos do Brasil', url: 'https://iptv-org.github.io/iptv/countries/br.m3u' }, EXTRA, CAT];
+  const OK = { name: 'Brasil — verificados (atualizada todo dia)', url: 'lists/brasil-verificados.m3u' };
+  const DEFAULT = [OK, { name: 'Canais abertos do Brasil', url: 'https://iptv-org.github.io/iptv/countries/br.m3u' }, EXTRA, CAT];
 
   // Listas gratuitas e abertas do projeto iptv-org, prontas para adicionar com um clique.
   const B = 'https://iptv-org.github.io/iptv/';
   const PRESETS = [
+    OK,
     EXTRA,
     CAT,
     { name: 'Em português (todos os países)', url: B + 'languages/por.m3u' },

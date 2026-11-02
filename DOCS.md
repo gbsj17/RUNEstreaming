@@ -34,6 +34,7 @@ Lançamentos recentes só tocam se o arquivo estiver no **seu** servidor Jellyfi
 
 - Categorias (chips), favoritos (☆), último canal e troca de canal pelos botões ◀ ▶ ou PageUp/PageDown.
 - Canais que não respondem (offline, geo-bloqueados, sem CORS): o site pula sozinho para o próximo, até 6 vezes.
+- **Lista verificada**: `lists/brasil-verificados.m3u` reúne só canais que passaram no teste (HTTPS, CORS, playlist e vídeo acessíveis). O teste (`scripts/check-lists.mjs`) roda todo dia pelo GitHub Actions e atualiza o arquivo.
 - **Listas**: em ⚙ > Listas de TV há listas prontas (iptv-org, Brasil iptv-com, Brasil iptvcat). Cada lista mostra quantos canais carregou ou o motivo do erro.
 - **Campo na aba TV**: cole um link de lista (`.m3u`, vira lista salva) ou de canal (`.m3u8`, toca na hora). Campos opcionais:
   - **EPG**: guia XMLTV (`.xml` ou `.xml.gz`). Mostra "Agora: programa" no player. O `tvg-id` do canal precisa existir no guia.

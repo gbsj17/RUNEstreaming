@@ -1,6 +1,10 @@
 # Novidades (patch notes)
 
-Versão atual: **1.2.0**. A mesma lista aparece no site em `docs.html#novidades`.
+Versão atual: **1.3.0**. A mesma lista aparece no site em `docs.html#novidades`.
+
+## 1.3.0
+
+- **Lista verificada de canais** (`lists/brasil-verificados.m3u`): 152 canais em português testados um a um (HTTPS, CORS liberado, playlist e vídeo acessíveis). É a primeira lista padrão. Uma rotina do GitHub (`.github/workflows/lists.yml`) refaz o teste todo dia e atualiza o arquivo. Para testar na hora: `node scripts/check-lists.mjs`.
 
 ## 1.2.0
 
