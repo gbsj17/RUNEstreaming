@@ -5,7 +5,7 @@
   const dlg = $('jf-modal');
 
   JellyfinSource.byGenre = true;
-  const SOURCES = [JellyfinSource, IptvSource, Tmdb, ArchiveSource];
+  const SOURCES = [JellyfinSource, IptvSource, ArchiveSource]; // só fontes que reproduzem; o TMDB só dá capas
 
   // Estado persistido (localStorage pode falhar em modo privado)
   const store = {

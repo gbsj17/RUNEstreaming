@@ -12,10 +12,17 @@ const ArchiveSource = (() => {
     'Ficção científica': 'collection:feature_films AND subject:("science fiction")',
     'Faroeste': 'collection:feature_films AND subject:(western)',
     'Noir e crime': 'collection:feature_films AND subject:(noir OR crime)',
+    'Drama': 'collection:feature_films AND subject:(drama)',
+    'Romance': 'collection:feature_films AND subject:(romance)',
+    'Aventura': 'collection:feature_films AND subject:(adventure)',
+    'Ação': 'collection:feature_films AND subject:(action)',
+    'Mistério': 'collection:feature_films AND subject:(mystery)',
+    'Musical': 'collection:feature_films AND subject:(musical)',
+    'Fantasia': 'collection:feature_films AND subject:(fantasy)',
     'Documentários': 'collection:feature_films AND subject:(documentary)',
     'Séries clássicas': 'collection:classic_tv',
   };
-  const PAGE = 30;
+  const PAGE = 40;
 
   const text = (v) => {
     const s = Array.isArray(v) ? v.join(' ') : (v || '');
