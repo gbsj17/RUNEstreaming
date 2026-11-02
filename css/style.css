@@ -131,5 +131,5 @@ a.btn { display: inline-block; text-decoration: none; color: var(--text); }
 .presets { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
 
 .tvadd { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; padding: 0 4vw 12px; }
-.tvadd input { flex: 1 1 280px; min-width: 0; padding: 10px 12px; border-radius: 8px; border: 1px solid #333; background: #15151a; color: inherit; }
+.tvadd input { flex: 1 1 220px; min-width: 0; padding: 10px 12px; border-radius: 8px; border: 1px solid #333; background: #15151a; color: inherit; }
 .tvadd[hidden] { display: none; }

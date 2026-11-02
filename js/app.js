@@ -402,14 +402,16 @@
     e.preventDefault();
     const url = $('tv-add-url').value.trim();
     const msg = $('tv-add-msg');
+    const epg = $('tv-add-epg').value.trim(), logos = $('tv-add-logos').value.trim();
+    if ((epg && !/^https:\/\//i.test(epg)) || (logos && !/^https:\/\//i.test(logos))) { msg.textContent = 'EPG e logos também precisam ser https://.'; return; }
     if (!/^https:\/\//i.test(url)) { msg.textContent = 'Use um link https:// (o navegador bloqueia http:// nesta página).'; return; }
     msg.textContent = 'Verificando…';
     let body = '';
     try { body = await (await fetch(url)).text(); } catch { /* sem CORS: tenta tocar mesmo assim */ }
     if (body.includes('#EXTINF') && !body.includes('#EXT-X-')) {
       let host = url; try { host = new URL(url).hostname; } catch { /* ignora */ }
-      IptvSource.add(host, url);
-      $('tv-add-url').value = '';
+      IptvSource.add(host, url, epg, logos);
+      $('tv-add-url').value = ''; $('tv-add-epg').value = ''; $('tv-add-logos').value = '';
       msg.textContent = 'Lista adicionada.';
       loadCatalog();
       return;

@@ -24,7 +24,8 @@ const IptvSource = (() => {
   const write = (v) => { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch { /* ignora */ } };
 
   const lists = () => read() || DEFAULT;
-  const add = (name, url) => write([...lists(), { name: name.trim() || url, url: url.trim() }]);
+  const add = (name, url, epg = '', logos = '') =>
+    write([...lists(), { name: name.trim() || url, url: url.trim(), epg: epg.trim(), logos: logos.trim() }]);
   const remove = (i) => write(lists().filter((_, k) => k !== i));
   const reset = () => write(DEFAULT);
 
@@ -33,7 +34,34 @@ const IptvSource = (() => {
     return m ? m[1] : '';
   };
 
-  function parse(text, listName) {
+  // Logos: usa o tvg-logo; se for relativo (ou vazio), completa com a base de logos informada.
+  const logoUrl = (logo, base, name) => {
+    if (/^https?:\/\//i.test(logo)) return logo;
+    if (!base) return '';
+    const b = base.replace(/\/+$/, '') + '/';
+    return b + (logo || encodeURIComponent(name) + '.png');
+  };
+
+  // Guia de programação (XMLTV, opcionalmente .gz): coloca "Agora: programa" na descrição dos canais.
+  async function applyEpg(url, items) {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('epg ' + res.status);
+    let xml;
+    if (/\.gz(\?|$)/i.test(url) && window.DecompressionStream) {
+      xml = await new Response(res.body.pipeThrough(new DecompressionStream('gzip'))).text();
+    } else xml = await res.text();
+    const doc = new DOMParser().parseFromString(xml, 'text/xml');
+    const stamp = (v) => { const m = (v || '').match(/^(\d{4})(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)\s*([+-]\d{4})?/); return m ? Date.parse(`${m[1]}-${m[2]}-${m[3]}T${m[4]}:${m[5]}:${m[6]}${m[7] ? m[7].slice(0, 3) + ':' + m[7].slice(3) : 'Z'}`) : NaN; };
+    const now = Date.now();
+    const cur = new Map();
+    doc.querySelectorAll('programme').forEach((p) => {
+      const a = stamp(p.getAttribute('start')), b = stamp(p.getAttribute('stop'));
+      if (a <= now && now < b) cur.set(p.getAttribute('channel'), (p.querySelector('title') || {}).textContent);
+    });
+    items.forEach((t) => { const n = cur.get(t.tvgId); if (n) t.desc = `Agora: ${n} · ${t.desc}`; });
+  }
+
+  function parse(text, listName, logos = '') {
     const out = [];
     const lines = text.split(/\r?\n/);
     for (let i = 0; i < lines.length; i++) {
@@ -49,7 +77,8 @@ const IptvSource = (() => {
         year: '',
         genre: group,
         desc: `Ao vivo · ${listName}`,
-        poster: attr(line, 'tvg-logo'),
+        tvgId: attr(line, 'tvg-id'),
+        poster: logoUrl(attr(line, 'tvg-logo'), logos, name),
         hue: (name.charCodeAt(0) * 37) % 360,
         source: 'iptv',
         live: true,
@@ -64,8 +93,9 @@ const IptvSource = (() => {
     await Promise.allSettled(lists().map(async (l) => {
       const res = await fetch(l.url);
       if (!res.ok) throw new Error(l.name + ' ' + res.status);
-      const items = parse(await res.text(), l.name).filter((t) => !seen.has(t.id) && seen.add(t.id));
+      const items = parse(await res.text(), l.name, l.logos).filter((t) => !seen.has(t.id) && seen.add(t.id));
       onPart && onPart(items);
+      if (l.epg) applyEpg(l.epg, items).catch((err) => console.warn('EPG', err));
     }));
     return [];
   }
