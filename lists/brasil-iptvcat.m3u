@@ -1,0 +1,173 @@
+#EXTM3U
+#EXTINF:0 tvg-country="AR;BR;CL;CO;PA;PE" tvg-logo="https://web.archive.org/web/20240509182044if_/https://pbs.twimg.com/profile_images/1744338643957780480/24Kv02RD_400x400.jpg" group-title="Undefined",ANIMESTATION (Argentina) (720p)
+https://ssh101-fl.bozztv.com/ssh101/livestreamingtv/index.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="Undefined",AWTV (1080p)
+https://streaming.cloudecast.com/hls/awtv/index.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="https://awtv.com.br/wp-content/uploads/2024/10/LOGO-AWTV-1080X1080-300x300.png" group-title="Undefined",AWTV (1080p)
+https://acesso.ecast.site:3070/live/awtvlive.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="https://i.imgur.com/KgetM8j.png" group-title="General",Adesso TV (720p)
+https://cdn.jmvstream.com/w/LVW-9715/LVW9715_12B26T62tm/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="Undefined",Agromais (1080p) [Geo-blocked]
+https://evpp.mm.uol.com.br/geob_band/agromais/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="https://i.imgur.com/7rjCS5i.png" group-title="Undefined",Amazon Sat (1080p)
+https://amazonsat.brasilstream.com.br/hls/amazonsat/index.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="https://i.imgur.com/rmAm6UE.png" group-title="Undefined",Anime TV (360p) [Not 24/7]
+https://stmv1.srvif.com/animetv/animetv/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="Undefined",Assembleia Legislativa do Estado de Mato Grosso (720p)
+https://streaming.al.mt.gov.br/test/index.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="https://i.imgur.com/6ckHV6k.jpeg" group-title="Entertainment",BDC TV (576p)
+https://srv1.zcast.com.br/bdctv/bdctv/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="Entertainment;Undefined",BDC TV (576p)
+https://video01.kshost.com.br/bdctv/bdctv/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="Undefined",Band (1080p) [Geo-blocked]
+https://evpp.mm.uol.com.br/geob_band/app/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="Undefined",Band (1080p) [Geo-blocked]
+https://evpp.mm.uol.com.br/geob_band/band/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="News",Bandnews (720p) [Geo-blocked]
+https://evpp.mm.uol.com.br/geob_band/bandnewstv/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="Undefined",Boas Novas (1080p)
+https://cdn.jmvstream.com/w/LVW-9375/LVW9375_6i0wPBCHYc/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="https://i.imgur.com/GrjGwKM.png" group-title="General",COM Brasil (1080p) [Not 24/7]
+https://br5093.streamingdevideo.com.br/abc/abc/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="https://i.imgur.com/S0ISpmU.png" group-title="Undefined",CWB TV (720p)
+https://59d39900ebfb8.streamlock.net/cwbtv/cwbtv/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="https://i.imgur.com/co7TCWC.png" group-title="News",Canal 38
+https://cdn.jmvstream.com/w/LVW-8503/LVW8503_d0V5oduFlK/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="https://i.imgur.com/TQFWEIS.png" group-title="Sports",Canal do Inter (720p) [Not 24/7]
+https://video01.soultv.com.br/internacional/internacional/playlist.m3u8
+#EXTINF:0 tvg-country="BB;BR;CA;CL;CO;MX;PA;PE" tvg-logo="https://caribbeanadvantage.com/images/CAtv-logo-512.png" group-title="General;MEXICO",Caribbean Advantage TV (1080p)
+https://video2.getstreamhosting.com:19360/8216/8216.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="Undefined",Catve FM (720p) [Not 24/7]
+https://5b33b873179a2.streamlock.net:1443/radiocamera/livestream/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="Undefined",Catve Master TV (720p) [Not 24/7]
+https://5b33b873179a2.streamlock.net:1443/mastertv/livestream/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="Undefined",Catve2 (720p)
+https://5b33b873179a2.streamlock.net:1443/catve2/catve2/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="https://i.imgur.com/SnaIMgj.png" group-title="Entertainment",Chroma TV (480p)
+https://5c483b9d1019c.streamlock.net/8054/8054/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="Undefined",Classique TV (360p)
+https://stmv1.srvif.com/classique/classique/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="Undefined",Classique TV 2 (480p)
+https://stmv1.srvif.com/classiquetv1/classiquetv1/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="Undefined",Classique TV Western (360p)
+https://stmv1.srvif.com/classiquew/classiquew/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="https://i.imgur.com/Md3xibE.png" group-title="General",Demais TV (720p)
+https://stmv1.samcast.com.br/demaistv6503/demaistv6503/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="Religious;Undefined",Despertar TV (720p)
+https://cdn.live.br1.jmvstream.com/webtv/pejexypz/playlist/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="Undefined",DiaTV (1080p)
+https://ythls-v2.onrender.com/channel/UCKnMcgDLxDeq9HqUgLhtYbQ.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="https://i.imgur.com/1eHNe91.png" group-title="Entertainment",ElyTV (360p)
+https://stmv1.srvsite.com/ely/ely/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/FIFA%2B_(2025).svg/700px-FIFA%2B_(2025).svg.png" group-title="Sports",FIFA+ Portuguese (720p)
+https://e3be9ac5.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/TEctYnJfRklGQVBsdXNQb3J0dWd1ZXNlX0hMUw/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="https://i.imgur.com/NF6PL8O.png" group-title="General",Fala Litoral (480p)
+https://5c483b9d1019c.streamlock.net/falalitoraltv/falalitoraltv/playlist.m3u8
+#EXTINF:0 tvg-country="AR;BB;BR;CO" tvg-logo="https://cdn.energeek.cl/logos/Fanpop-512.png" group-title="Undefined",Fanpop TV
+https://streaming-cl.sh1ny.space/memfs/e16d2f72-70b5-4bf5-b9c5-107b6390a10f.m3u8
+#EXTINF:0 tvg-country="BR;CL" tvg-logo="https://cdn.energeek.cl/logos/Fanpop-512.png" group-title="Undefined",Fanpop TV
+https://wifispeed.trapemn.tv:1936/energeek/canal-2p/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="https://i.imgur.com/3J6Y08E.png" group-title="Auto",Garage TV Latin America
+https://stream1.sersat.com/hls/garagetv.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="Undefined",Geekdot (720p)
+https://stream.ichibantv.com:3764/hybrid/play.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="https://i.imgur.com/aoq9CGU.png" group-title="Religious",Gospel Cartoon (360p)
+https://stmv1.srvif.com/gospelcartoon/gospelcartoon/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="https://i.imgur.com/RUKVrOH.png" group-title="General",ISTV (720p) [Not 24/7]
+https://stmv1.srvstm.com/sistema7933/sistema7933/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="https://listaiptv.gratis/logos/imagens/ainraga.png" group-title="Undefined",IURD TV
+https://644398c.ha.azioncdn.net/primary/tvuniversal_480p.sdp/playlist.m3u8
+#EXTINF:0 tvg-country="AR;BR" tvg-logo="https://static.kanade.cl/assets/img/profilepic_512px.png" group-title="Undefined",Kanade (1080p)
+https://streaming-cl.sh1ny.space/memfs/0e41fc31-9f44-46d4-8712-0446e2f3dcaa.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="Undefined",Kanade Brasil (1080p)
+https://backend.energeek.cl/webtv/kanadebr/index.m3u8?token=deM0kanADeweB
+#EXTINF:0 tvg-country="BR" tvg-logo="https://i.imgur.com/Tf0vweF.png" group-title="Music;Undefined",KpopTV Play
+https://ssh101-fl.bozztv.com/ssh101/kpoptv/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="https://i.imgur.com/Tf0vweF.png" group-title="Music",KpopTV Play (576p)
+https://giatv.bozztv.com/giatv/giatv-kpoptvplay/kpoptvplay/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="Undefined",Loading (720p)
+https://stmv1.srvif.com/loadingtv/loadingtv/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="https://i.imgur.com/TDEDNLK.png" group-title="General",MKK Web TV (720p) [Not 24/7]
+https://video01.logicahost.com.br/mkkwebtv/mkkwebtv/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="https://i.imgur.com/haXHFCT.png" group-title="Music",Master Show TV (360p)
+https://mastershowtv.videovox.pw/master6123/master6123/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="https://i.imgur.com/cgN2hfm.png" group-title="Undefined",Nova TV Agrotour (360p)
+https://video01.kshost.com.br/marcelo6682/marcelo6682/playlist.m3u8
+#EXTINF:0 tvg-country="BR;PE" tvg-logo="https://i.imgur.com/01KEiEp.png" group-title="General",Perú Channel (720p)
+https://a.cdni.live/peruchanel/peruchanel/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="Undefined",Pluto TV Cine Drama (720p)
+https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel/5f1210d14ae1f80007bafb1d/master.m3u8?advertisingId=channel&appName=rokuchannel&appVersion=1.0&bmodel=bm1&channel_id=channel&content=channel&content_rating=ROKU_ADS_CONTENT_RATING&content_type=livefeed&coppa=false&deviceDNT=1&deviceId=channel&deviceMake=rokuChannel&deviceModel=web&deviceType=rokuChannel&deviceVersion=1.0&embedPartner=rokuChannel&genre=ROKU_ADS_CONTENT_GENRE&is_lat=1&platform=web&rdid=channel&studio_id=viacom&tags=ROKU_CONTENT_TAGS
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="Undefined",Pluto TV Cine Família (720p) [Not 24/7]
+https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel/5f171f032cd22e0007f17f3d/master.m3u8?advertisingId=channel&appName=rokuchannel&appVersion=1.0&bmodel=bm1&channel_id=channel&content=channel&content_rating=ROKU_ADS_CONTENT_RATING&content_type=livefeed&coppa=false&deviceDNT=1&deviceId=channel&deviceMake=rokuChannel&deviceModel=web&deviceType=rokuChannel&deviceVersion=1.0&embedPartner=rokuChannel&genre=ROKU_ADS_CONTENT_GENRE&is_lat=1&platform=web&rdid=channel&studio_id=viacom&tags=ROKU_CONTENT_TAGS
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="Undefined",Pluto TV MTV (Brazil) (720p)
+https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel/5f1212fb81e85c00077ae9ef/master.m3u8?advertisingId=channel&appName=rokuchannel&appVersion=1.0&bmodel=bm1&channel_id=channel&content=channel&content_rating=ROKU_ADS_CONTENT_RATING&content_type=livefeed&coppa=false&deviceDNT=1&deviceId=channel&deviceMake=rokuChannel&deviceModel=web&deviceType=rokuChannel&deviceVersion=1.0&embedPartner=rokuChannel&genre=ROKU_ADS_CONTENT_GENRE&is_lat=1&platform=web&rdid=channel&studio_id=viacom&tags=ROKU_CONTENT_TAGS
+#EXTINF:0 tvg-country="BR" tvg-logo="https://i.imgur.com/ZWFxlU1.png" group-title="General",RBATV (720p)
+https://cdn.live.br1.jmvstream.com/w/LVW-15748/LVW15748_Yed7yzLuRC/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="https://i.imgur.com/Unjs1wi.png" group-title="Religious",RIT TV (1080p)
+https://acesso.ecast.site:3648/live/ritlive.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="News",Record News (720p) [Geo-blocked]
+https://playplusnews-lh.akamaihd.net/i/pp_nws@377849/master.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="Undefined",Record TV Belem (720p) [Geo-blocked]
+https://playpluspa-lh.akamaihd.net/i/pp_pa@377468/index_720_av-p.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="Undefined",Record TV Brasilia (720p) [Geo-blocked]
+https://playplusbsa-lh.akamaihd.net/i/pp_bsa@377860/index_720_av-p.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="Undefined",Record TV Goias (720p) [Geo-blocked]
+https://playplusgoya-lh.akamaihd.net/i/pp_gna@377833/index_720_av-p.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="Undefined",Record TV Itapoan (720p) [Geo-blocked]
+https://playplussdr-lh.akamaihd.net/i/pp_sdr@377858/index_720_av-b.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="Undefined",Record TV Minas (720p) [Geo-blocked]
+https://playplusbh-lh.akamaihd.net/i/pp_bh@377862/index_720_av-p.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="Undefined",Record TV RS (720p) [Geo-blocked]
+https://playpluspoa-lh.akamaihd.net/i/pp_poa@377864/index_720_av-p.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="Undefined",Record TV Rio (720p) [Geo-blocked]
+https://playplusrjo-lh.akamaihd.net/i/pp_rj@377859/index_720_av-p.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="Undefined",Record TV SP (720p) [Geo-blocked]
+https://playplusspo-lh.akamaihd.net/i/pp_sp@350176/index_720_av-p.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="https://i.imgur.com/sz9gTTr.png" group-title="General",RecordTV
+https://cdn.jmvstream.com/w/LVW-10842/LVW10842_513N26MDBL/chunklist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="https://i.imgur.com/ZFN1R4B.png" group-title="Entertainment",Rede NGT (1080p)
+https://isaocorp.cloudecast.com/ngt/index.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="https://i.imgur.com/Lxqb2cU.png" group-title="General",Rede QDM (360p)
+https://59f1cbe63db89.streamlock.net:1443/tvkidmais/_definst_/tvkidmais/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="https://i.imgur.com/kh3LGAP.png" group-title="General",Rede SPTV (360p)
+https://video01.logicahost.com.br/websptv/websptv/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="Undefined",Rede TV! (720p)
+https://cdn.jmvstream.com/w/AVJ-15235/playlist/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="General;Undefined",Rede TV! ES (1080p)
+https://streaming.cloudecast.com/hls/redetves/index.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="Undefined",Rede TV! Mais (720p)
+https://stmv7.samcast.com.br/playredetvmais/playredetvmais/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="https://i.imgur.com/Usw2e9d.png" group-title="General",Rede UTV (720p)
+https://59f1cbe63db89.streamlock.net:1443/canalvirtual08/_definst_/canalvirtual08/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="https://images.samsung.com/is/image/samsung/assets/br/tvs/smart-tv/channel-list/Revry_Brasil_476x476circle.png?$ORIGIN_PNG$" group-title="Lifestyle",Revry Brasil
+https://linear-181.frequency.stream/dist/24i/181/hls/master/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="Undefined",SBT Pará (720p)
+https://streaming.portaltvparaense.com.br/hls/rtp.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="Undefined",SESC TV (1080p)
+https://slbps-ml-sambatech.akamaized.net/samba-live/2472/7424/8a00fe7cc36ac263b2c3e9324497d5ff/video/93a9920d-1b24-4c5e-a7d2-63d5489f59b5_index.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="https://i.imgur.com/E0IG98f.png" group-title="Undefined",SIC TV
+https://parecisfmlive.brasilstream.com.br/hls/parecisfmlive/index.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="Undefined",STZ TV (1080p)
+https://cdn.live.br1.jmvstream.com/webtv/AVJ-12952/playlist/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="https://i.imgur.com/SeF2I7q.png" group-title="Undefined",STZ TV (720p)
+https://cdn.jmvstream.com/w/AVJ-12952/playlist/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="Undefined",Santa Cecilia TV (1080p)
+https://5fb29de4928ea.streamlock.net/2063/2063/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="https://i.imgur.com/lvUbMen.png" group-title="Undefined",Superflix TV (720p)
+https://streaming.cloudecast.com/hls/superflix/index.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="https://i.imgur.com/I7XGMhj.png" group-title="News",TV A Folha (720p)
+https://video01.logicahost.com.br/tvafolha/tvafolha/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="https://i.imgur.com/qeo2oPM.png" group-title="Undefined",TV A7 Plus (1080p)
+https://srv3.zcast.com.br/wellington7720/wellington7720/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="https://i.imgur.com/rsfnv4Z.png" group-title="General",TV Aldeia (720p)
+https://stmv1.samcast.com.br/giovane7843/giovane7843/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="Undefined",TV Aratu (720p)
+https://cdn.jmvstream.com/w/LVW-8379/LVW8379_rIq6ZYiIiA/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="" group-title="Undefined",TV Assembléia Ceará (720p)
+https://jjn5dkk9bd.zoeweb.tv/z404-live/stream/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="https://i.imgur.com/vLpm8tN.png" group-title="General",TV BRICS Portuguese (1080p)
+https://porbrics.mediacdn.ru/cdn/brics/portuguese/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="https://i.imgur.com/JxsyXCD.png" group-title="General",TV Beltrão (1080p)
+https://5cf4a2c2512a2.streamlock.net/tvbeltrao/tvbeltrao/playlist.m3u8
+#EXTINF:0 tvg-country="BR" tvg-logo="https://i.imgur.com/1XrArrG.png" group-title="Entertainment",TV Boqueirão (720p)
+https://srv3.zcast.com.br/tvboqueirao/tvboqueirao/playlist.m3u8
