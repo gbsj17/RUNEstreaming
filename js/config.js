@@ -8,7 +8,7 @@ window.RS_CONFIG = {
   // Supabase (Project Settings > API): URL e chave "anon public". A anon key é pública por design;
   // quem protege os dados são as políticas RLS de supabase/schema.sql. Nunca coloque a service_role aqui.
   // Endereço do proxy (pasta worker/). Com ele, canais http:// e servidores sem CORS passam a tocar.
-  proxyUrl: '',
+  proxyUrl: 'https://runestreaming-proxy.genivalbsj17.workers.dev',
 
   supabaseUrl: '',
   supabaseKey: '',
