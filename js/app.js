@@ -27,6 +27,19 @@
   let searchTimer = null;
   let searching = false;
 
+  // Sincroniza tudo com a conta (se logado). localStorage continua como cache local.
+  let syncTimer = null;
+  const sync = () => {
+    if (!Cloud.user()) return;
+    clearTimeout(syncTimer);
+    syncTimer = setTimeout(() => Cloud.push({
+      tmdb_key: Tmdb.apiKey() || null,
+      jellyfin: JellyfinSource.config() || null,
+      my_list: [...myList],
+      progress,
+    }), 1500);
+  };
+
   const allItems = () => sections.flatMap((s) => s.items);
   const byId = (id) => allItems().concat(remote).find((t) => t.id === id);
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -125,6 +138,7 @@
   function toggleList(id) {
     myList.has(id) ? myList.delete(id) : myList.add(id);
     store.set('list', [...myList]);
+    sync();
     render();
   }
 
@@ -187,6 +201,7 @@
     if (!current || !video.duration) return;
     progress[current.id] = { pct: Math.round((video.currentTime / video.duration) * 100) };
     store.set('progress', progress);
+    sync();
   }
 
   // Conexão com o Jellyfin
@@ -200,7 +215,7 @@
 
   $('jf-btn').addEventListener('click', openJellyfin);
   $('jf-cancel').addEventListener('click', () => { dlg.hidden = true; });
-  $('jf-logout').addEventListener('click', () => { JellyfinSource.logout(); dlg.hidden = true; loadCatalog(); });
+  $('jf-logout').addEventListener('click', () => { JellyfinSource.logout(); dlg.hidden = true; sync(); loadCatalog(); });
   $('jf-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const f = e.target;
@@ -209,12 +224,54 @@
       await JellyfinSource.login(f.server.value, f.user.value, f.pass.value);
       f.pass.value = '';
       dlg.hidden = true;
+      sync();
       loadCatalog();
     } catch (err) {
       $('jf-error').textContent = err.message === 'Failed to fetch'
         ? 'Não foi possível acessar o servidor (verifique HTTPS e CORS).' : err.message;
     }
   });
+
+  // Conta (Supabase)
+  const ac = $('ac-modal');
+  const refreshAccount = () => {
+    const u = Cloud.user();
+    $('ac-btn').textContent = u ? 'Conta ✓' : 'Conta';
+    $('ac-off').hidden = Cloud.enabled;
+    $('ac-form').hidden = !Cloud.enabled || !!u;
+    $('ac-in').hidden = !u;
+    if (u) $('ac-email').textContent = u.email;
+  };
+  async function applyRemote() {
+    const row = await Cloud.pull();
+    if (!row) { sync(); return; }               // primeira vez: sobe o que já existe no navegador
+    if (row.tmdb_key) Tmdb.setKey(row.tmdb_key);
+    if (row.jellyfin) JellyfinSource.restore(row.jellyfin);
+    myList = new Set([...myList, ...(row.my_list || [])]);
+    progress = { ...progress, ...(row.progress || {}) };
+    store.set('list', [...myList]);
+    store.set('progress', progress);
+  }
+  $('ac-btn').addEventListener('click', () => { $('ac-error').textContent = ''; refreshAccount(); ac.hidden = false; });
+  $('ac-cancel').addEventListener('click', () => { ac.hidden = true; });
+  $('ac-close').addEventListener('click', () => { ac.hidden = true; });
+  $('ac-logout').addEventListener('click', async () => { await Cloud.signOut(); refreshAccount(); ac.hidden = true; });
+  const authSubmit = (fn) => async () => {
+    const f = $('ac-form');
+    if (!f.reportValidity()) return;
+    $('ac-error').textContent = 'Aguarde…';
+    try {
+      await fn(f.email.value, f.pass.value);
+      f.pass.value = '';
+      $('ac-error').textContent = '';
+      await applyRemote();
+      refreshAccount();
+      ac.hidden = true;
+      loadCatalog();
+    } catch (err) { $('ac-error').textContent = err.message; }
+  };
+  $('ac-form').addEventListener('submit', (e) => { e.preventDefault(); authSubmit(Cloud.signIn)(); });
+  $('ac-signup').addEventListener('click', authSubmit(Cloud.signUp));
 
   // Chave do TMDB (capas reais)
   const tm = $('tm-modal');
@@ -226,6 +283,7 @@
   $('tm-form').addEventListener('submit', (e) => {
     e.preventDefault();
     Tmdb.setKey($('tm-key').value);
+    sync();
     tm.hidden = true;
     loadCatalog();
   });
@@ -241,11 +299,12 @@
     if (e.target === modal) closePlayer();
     if (e.target === dlg) dlg.hidden = true;
     if (e.target === tm) tm.hidden = true;
+    if (e.target === ac) ac.hidden = true;
   });
   $('player-close').addEventListener('click', closePlayer);
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
-    if (!dlg.hidden) dlg.hidden = true; else if (!tm.hidden) tm.hidden = true; else closePlayer();
+    if (!dlg.hidden) dlg.hidden = true; else if (!tm.hidden) tm.hidden = true; else if (!ac.hidden) ac.hidden = true; else closePlayer();
   });
   video.addEventListener('timeupdate', () => { if (Math.round(video.currentTime) % 5 === 0) saveProgress(); });
   video.addEventListener('pause', saveProgress);
@@ -271,5 +330,9 @@
   });
   window.addEventListener('scroll', () => $('topbar').classList.toggle('solid', scrollY > 20), { passive: true });
 
-  loadCatalog();
+  (async () => {
+    if (await Cloud.init()) await applyRemote();
+    refreshAccount();
+    loadCatalog();
+  })();
 })();

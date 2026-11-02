@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>RUNEstreaming</title>
   <meta name="description" content="RUNEstreaming — catálogo de filmes e séries para assistir online.">
-  <link rel="stylesheet" href="css/style.css?v=4">
+  <link rel="stylesheet" href="css/style.css?v=5">
 </head>
 <body>
   <header class="topbar" id="topbar">
@@ -14,6 +14,7 @@
       <button class="tab is-active" data-view="home">Início</button>
       <button class="tab" data-view="list">Minha lista</button>
     </nav>
+    <button class="tab" id="ac-btn" type="button">Conta</button>
     <button class="tab" id="tm-btn" type="button">Capas</button>
     <button class="tab" id="jf-btn" type="button">Conectar Jellyfin</button>
     <input id="search" class="search" type="search" placeholder="Buscar títulos…" aria-label="Buscar títulos" autocomplete="off">
@@ -70,12 +71,40 @@
     </div>
   </div>
 
+  <div class="modal" id="ac-modal" role="dialog" aria-modal="true" aria-label="Conta" hidden>
+    <div class="player-box dialog">
+      <h2>Conta</h2>
+      <p class="hint" id="ac-off" hidden>O banco ainda não está configurado. Preencha <code>js/config.js</code> com a URL e a chave anônima do Supabase (veja o README).</p>
+      <form id="ac-form" hidden>
+        <p class="hint">Entre para guardar suas chaves, sua lista e o ponto onde parou em qualquer aparelho.</p>
+        <label>E-mail<input name="email" type="email" autocomplete="email" required></label>
+        <label>Senha<input name="pass" type="password" autocomplete="current-password" minlength="6" required></label>
+        <div class="actions">
+          <button class="btn primary" type="submit">Entrar</button>
+          <button class="btn" type="button" id="ac-signup">Criar conta</button>
+          <button class="btn" type="button" id="ac-cancel">Cancelar</button>
+        </div>
+      </form>
+      <div id="ac-in" hidden>
+        <p id="ac-email"></p>
+        <p class="hint">Suas chaves, lista e progresso estão sincronizados.</p>
+        <div class="actions">
+          <button class="btn" type="button" id="ac-logout">Sair</button>
+          <button class="btn" type="button" id="ac-close">Fechar</button>
+        </div>
+      </div>
+      <p class="form-error" id="ac-error" role="alert"></p>
+    </div>
+  </div>
+
   <footer class="footer">© RUNEstreaming · Domínio público via Internet Archive · Amostras da Blender Foundation (CC BY)</footer>
 
-  <script src="js/catalog.js?v=4"></script>
-  <script src="js/sources/archive.js?v=4"></script>
-  <script src="js/sources/jellyfin.js?v=4"></script>
-  <script src="js/sources/tmdb.js?v=4"></script>
-  <script src="js/app.js?v=4"></script>
+  <script src="js/config.js?v=5"></script>
+  <script src="js/cloud.js?v=5"></script>
+  <script src="js/catalog.js?v=5"></script>
+  <script src="js/sources/archive.js?v=5"></script>
+  <script src="js/sources/jellyfin.js?v=5"></script>
+  <script src="js/sources/tmdb.js?v=5"></script>
+  <script src="js/app.js?v=5"></script>
 </body>
 </html>

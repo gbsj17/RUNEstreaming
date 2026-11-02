@@ -55,5 +55,9 @@ const JellyfinSource = (() => {
     }));
   }
 
-  return { label: 'Minha biblioteca · Jellyfin', isConnected, login, logout, load };
+  // config/restore deixam a conta (Supabase) guardar a sessão do Jellyfin, nunca a senha.
+  const config = () => read();
+  const restore = (c) => { if (c) write(c); };
+
+  return { label: 'Minha biblioteca · Jellyfin', isConnected, login, logout, load, config, restore };
 })();
