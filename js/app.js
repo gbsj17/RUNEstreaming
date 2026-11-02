@@ -458,6 +458,30 @@
     f.reset(); renderLists(); loadCatalog();
   });
 
+  // Coletor de bugs
+  const bug = $('bug-modal');
+  const fillBug = () => {
+    const d = $('bug-desc').value;
+    $('bug-report').value = Debug.report(d);
+    $('bug-issue').href = Debug.issueUrl(d);
+  };
+  $('bug-btn').addEventListener('click', () => { $('bug-msg').textContent = ''; fillBug(); bug.hidden = false; });
+  $('bug-desc').addEventListener('input', fillBug);
+  $('bug-close').addEventListener('click', () => { bug.hidden = true; });
+  $('bug-copy').addEventListener('click', async () => {
+    const text = $('bug-report').value;
+    try { await navigator.clipboard.writeText(text); $('bug-msg').textContent = 'Copiado.'; }
+    catch { $('bug-report').select(); $('bug-msg').textContent = 'Selecionei o texto: use Ctrl+C.'; }
+  });
+  $('bug-download').addEventListener('click', () => {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([$('bug-report').value], { type: 'text/plain' }));
+    a.download = 'runestreaming-bug.txt';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+  if ($('ver')) $('ver').textContent = (window.RS_CONFIG && RS_CONFIG.version) || '';
+
   // Conta (Supabase)
   const ac = $('ac-modal');
   const refreshAccount = () => {
@@ -533,6 +557,7 @@
     if (e.target === tm) tm.hidden = true;
     if (e.target === ac) ac.hidden = true;
     if (e.target === tv) tv.hidden = true;
+    if (e.target === bug) bug.hidden = true;
     if (e.target === det) closeDetail();
   });
   $('player-close').addEventListener('click', closePlayer);
@@ -543,12 +568,14 @@
       e.preventDefault(); return zap(e.key === 'PageUp' ? -1 : 1);
     }
     if (e.key !== 'Escape') return;
-    if (!det.hidden) closeDetail(); else if (!tv.hidden) tv.hidden = true; else if (!dlg.hidden) dlg.hidden = true; else if (!tm.hidden) tm.hidden = true; else if (!ac.hidden) ac.hidden = true; else closePlayer();
+    if (!det.hidden) closeDetail(); else if (!bug.hidden) bug.hidden = true; else if (!tv.hidden) tv.hidden = true; else if (!dlg.hidden) dlg.hidden = true; else if (!tm.hidden) tm.hidden = true; else if (!ac.hidden) ac.hidden = true; else closePlayer();
   });
   video.addEventListener('timeupdate', () => { if (Math.round(video.currentTime) % 5 === 0) saveProgress(); });
   video.addEventListener('pause', saveProgress);
   video.addEventListener('playing', () => { clearTimeout(watchdog); $('retry').hidden = true; zapTries = 0; if (current) $('player-desc').textContent = current.desc; });
-  video.addEventListener('error', () => { if (video.getAttribute('src')) fallback(); });
+  video.addEventListener('error', () => {
+    if (video.getAttribute('src')) { Debug.add('player', 'erro', video.error && video.error.code, (video.currentSrc || '').slice(0, 160)); fallback(); }
+  });
   video.addEventListener('progress', () => {
     if (current && !current.live && video.readyState < 3 && video.buffered.length && video.duration) {
       const pct = Math.round((video.buffered.end(video.buffered.length - 1) / video.duration) * 100);

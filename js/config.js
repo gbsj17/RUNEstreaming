@@ -1,5 +1,7 @@
 // Configuração pública. Nada aqui é segredo: são chaves feitas para rodar no navegador.
 window.RS_CONFIG = {
+  version: '1.1.0',
+
   // Chave v3 do TMDB (capas e sinopses). Quem colar outra no botão "Capas" usa a dele no lugar desta.
   tmdbKey: '39e10b6458df43b5546cde28e22e12b1',
 

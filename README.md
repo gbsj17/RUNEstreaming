@@ -2,12 +2,15 @@
 
 Site de streaming estático (HTML, CSS e JavaScript puro, sem build).
 
+**Documentação completa:** [DOCS.md](DOCS.md) (também em `docs.html` no site) · **Novidades:** [CHANGELOG.md](CHANGELOG.md)
+
 ## Recursos
 
 - Destaque (hero) e fileiras por gênero
 - Busca por título/gênero
 - Minha lista e "Continuar assistindo" (salvos no `localStorage`)
-- Fontes de catálogo combinadas: Jellyfin (biblioteca própria), Internet Archive (domínio público) e amostras da Blender
+- Fontes de catálogo: Jellyfin (biblioteca própria), Internet Archive (domínio público) e TV ao vivo (listas M3U)
+- Coletor de bugs (⚙ > Reportar bug)
 - Player em modal (HLS via hls.js para o Jellyfin) com retomada do ponto onde parou; `Esc` fecha
 
 ## Estrutura
@@ -15,7 +18,11 @@ Site de streaming estático (HTML, CSS e JavaScript puro, sem build).
 ```
 index.html        página única
 css/style.css     estilos
-js/sources/       fontes de dados (archive.js, jellyfin.js, tmdb.js)
+js/sources/       fontes de dados (archive.js, jellyfin.js, iptv.js, tmdb.js)
+js/debug.js       coletor de bugs
+docs.html         documentação e novidades
+worker/           proxy Cloudflare (opcional)
+lists/            listas M3U incluídas
 js/cloud.js       conta e sincronização (Supabase)
 js/config.js      URL e chave anônima do Supabase
 supabase/         schema.sql (tabela e políticas RLS)

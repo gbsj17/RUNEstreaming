@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Documentação · RUNEstreaming</title>
+  <link rel="stylesheet" href="css/style.css?v=26">
+  <style>
+    body { display: block; }
+    .doc { max-width: 860px; margin: 0 auto; padding: 24px 16px 64px; line-height: 1.6; }
+    .doc h1, .doc h2, .doc h3 { margin: 1.6em 0 .5em; }
+    .doc a { color: var(--accent-2); }
+    .doc code { background: #ffffff14; padding: 1px 5px; border-radius: 4px; }
+    .doc pre { background: #15151a; padding: 12px; border-radius: 8px; overflow-x: auto; }
+    .doc pre code { background: none; padding: 0; }
+    .doc table { border-collapse: collapse; width: 100%; display: block; overflow-x: auto; }
+    .doc th, .doc td { border: 1px solid #ffffff22; padding: 6px 10px; text-align: left; vertical-align: top; }
+    .doc nav { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 8px; }
+    .doc hr { border: 0; border-top: 1px solid #ffffff22; margin: 40px 0; }
+  </style>
+</head>
+<body>
+  <main class="doc">
+    <nav><a href="./">← Voltar ao site</a> <a href="#docs">Documentação</a> <a href="#novidades">Novidades</a></nav>
+    <section id="docs"><p>Carregando documentação…</p></section>
+    <hr>
+    <section id="novidades"><p>Carregando novidades…</p></section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+  <script>
+    // Mesma fonte do repositório: DOCS.md e CHANGELOG.md.
+    const show = async (file, id) => {
+      const el = document.getElementById(id);
+      try {
+        const res = await fetch(file);
+        if (!res.ok) throw new Error(res.status);
+        el.innerHTML = marked.parse(await res.text());
+      } catch {
+        el.innerHTML = `<p>Não foi possível carregar. Abra <a href="${file}">${file}</a>.</p>`;
+      }
+    };
+    show('DOCS.md', 'docs');
+    show('CHANGELOG.md', 'novidades').then(() => { if (location.hash === '#novidades') document.getElementById('novidades').scrollIntoView(); });
+  </script>
+</body>
+</html>

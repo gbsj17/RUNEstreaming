@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>RUNEstreaming</title>
   <meta name="description" content="RUNEstreaming — catálogo de filmes e séries para assistir online.">
-  <link rel="stylesheet" href="css/style.css?v=25">
+  <link rel="stylesheet" href="css/style.css?v=26">
 </head>
 <body>
   <header class="topbar" id="topbar">
@@ -24,6 +24,9 @@
         <button class="menu-item" id="jf-btn" type="button">Conectar Jellyfin</button>
         <button class="menu-item" id="tm-btn" type="button">Capas (TMDB)</button>
         <button class="menu-item" id="ac-btn" type="button">Conta</button>
+        <button class="menu-item" id="bug-btn" type="button">Reportar bug</button>
+        <a class="menu-item" href="docs.html">Documentação</a>
+        <a class="menu-item" href="docs.html#novidades">Novidades (patch notes)</a>
       </div>
     </details>
     <input id="search" class="search" type="search" placeholder="Buscar títulos…" aria-label="Buscar títulos" autocomplete="off">
@@ -128,6 +131,22 @@
     </div>
   </div>
 
+  <div class="modal" id="bug-modal" role="dialog" aria-modal="true" aria-label="Reportar bug" hidden>
+    <div class="player-box dialog bug">
+      <h2>Reportar bug</h2>
+      <p class="hint">O relatório inclui versão, navegador, erros recentes e falhas de rede. Não inclui senhas, tokens nem a chave do TMDB. Nada é enviado sozinho.</p>
+      <label>O que aconteceu? (o que você fez e o que esperava)<textarea id="bug-desc" rows="3" placeholder="Ex.: cliquei no filme X e o player ficou parado"></textarea></label>
+      <label>Relatório<textarea id="bug-report" rows="9" readonly></textarea></label>
+      <div class="actions">
+        <button class="btn primary" id="bug-copy" type="button">Copiar</button>
+        <button class="btn" id="bug-download" type="button">Baixar .txt</button>
+        <a class="btn" id="bug-issue" target="_blank" rel="noopener">Abrir issue no GitHub</a>
+        <button class="btn" id="bug-close" type="button">Fechar</button>
+      </div>
+      <p class="hint" id="bug-msg"></p>
+    </div>
+  </div>
+
   <div class="modal" id="ac-modal" role="dialog" aria-modal="true" aria-label="Conta" hidden>
     <div class="player-box dialog">
       <h2>Conta</h2>
@@ -154,14 +173,15 @@
     </div>
   </div>
 
-  <footer class="footer">© RUNEstreaming · Domínio público via Internet Archive<br>Informações de filmes e séries: TMDB. Este produto usa a API do TMDB mas não é endossado ou certificado por ele. Disponibilidade: JustWatch.</footer>
+  <footer class="footer">© RUNEstreaming · Domínio público via Internet Archive<br>Informações de filmes e séries: TMDB. Este produto usa a API do TMDB mas não é endossado ou certificado por ele. Disponibilidade: JustWatch.<br><a href="docs.html">Documentação</a> · <a href="docs.html#novidades">Novidades</a> · v<span id="ver"></span></footer>
 
-  <script src="js/config.js?v=25"></script>
-  <script src="js/cloud.js?v=25"></script>
-  <script src="js/sources/archive.js?v=25"></script>
-  <script src="js/sources/jellyfin.js?v=25"></script>
-  <script src="js/sources/iptv.js?v=25"></script>
-  <script src="js/sources/tmdb.js?v=25"></script>
-  <script src="js/app.js?v=25"></script>
+  <script src="js/debug.js?v=26"></script>
+  <script src="js/config.js?v=26"></script>
+  <script src="js/cloud.js?v=26"></script>
+  <script src="js/sources/archive.js?v=26"></script>
+  <script src="js/sources/jellyfin.js?v=26"></script>
+  <script src="js/sources/iptv.js?v=26"></script>
+  <script src="js/sources/tmdb.js?v=26"></script>
+  <script src="js/app.js?v=26"></script>
 </body>
 </html>

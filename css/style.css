@@ -133,3 +133,8 @@ a.btn { display: inline-block; text-decoration: none; color: var(--text); }
 .tvadd { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; padding: 0 4vw 12px; }
 .tvadd input { flex: 1 1 220px; min-width: 0; padding: 10px 12px; border-radius: 8px; border: 1px solid #333; background: #15151a; color: inherit; }
 .tvadd[hidden] { display: none; }
+
+.dialog textarea { width: 100%; box-sizing: border-box; padding: 8px 10px; border-radius: 8px; border: 1px solid #333; background: #15151a; color: inherit; font: .8rem ui-monospace, monospace; resize: vertical; }
+.bug { max-width: 560px; }
+a.btn { text-decoration: none; display: inline-block; }
+a.menu-item { text-decoration: none; display: block; color: inherit; }
