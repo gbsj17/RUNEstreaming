@@ -46,3 +46,12 @@ Opcional. Guarda a chave do TMDB, a sessão do Jellyfin, a Minha lista e o progr
 3. Project Settings > API: copie a **Project URL** e a chave **anon public** para `js/config.js`. Essas duas são públicas por design; **nunca** use a `service_role`.
 4. Authentication > Providers > Email: para testar sem confirmar e-mail, desligue "Confirm email".
 5. No site, botão **Conta** > criar conta ou entrar. Depois disso a chave do TMDB (botão **Capas**) fica salva na sua conta.
+
+## Proxy para canais http:// (opcional)
+O navegador bloqueia `http://` e servidores sem CORS numa página HTTPS. A pasta `worker/` tem um Cloudflare Worker que resolve isso:
+
+1. No terminal: `cd worker`, `npx wrangler login`, `npx wrangler deploy`.
+2. Copie o endereço que o deploy mostrar (`https://runestreaming-proxy.<sua-conta>.workers.dev`) para `proxyUrl` em `js/config.js`.
+3. Só as páginas em `ALLOWED_ORIGINS` (`worker/wrangler.toml`) podem usar o proxy; troque ao usar domínio próprio.
+
+Com o proxy, listas e canais `http://` passam a aparecer e tocar na aba TV ao vivo.

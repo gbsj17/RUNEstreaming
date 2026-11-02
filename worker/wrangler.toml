@@ -1,0 +1,7 @@
+name = "runestreaming-proxy"
+main = "worker.js"
+compatibility_date = "2025-01-01"
+
+[vars]
+# Páginas autorizadas a usar o proxy (separe por vírgula). Troque ao usar domínio próprio.
+ALLOWED_ORIGINS = "https://gbsj17.github.io"

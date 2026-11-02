@@ -20,6 +20,10 @@ const IptvSource = (() => {
     { name: 'Notícias', url: B + 'categories/news.m3u' },
   ];
 
+  // Proxy opcional (worker/): libera http:// e servidores sem CORS.
+  const proxy = () => (window.RS_CONFIG && RS_CONFIG.proxyUrl || '').replace(/\/+$/, '');
+  const via = (u) => (proxy() && /^http:/i.test(u) ? `${proxy()}/?url=${encodeURIComponent(u)}` : u);
+
   const read = () => { try { return JSON.parse(localStorage.getItem(KEY)); } catch { return null; } };
   const write = (v) => { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch { /* ignora */ } };
 
@@ -68,7 +72,7 @@ const IptvSource = (() => {
       const line = lines[i];
       if (!line.startsWith('#EXTINF')) continue;
       const url = (lines.slice(i + 1).find((l) => l.trim() && !l.startsWith('#')) || '').trim();
-      if (!/^https:\/\//i.test(url)) continue;     // http:// é bloqueado pelo navegador numa página HTTPS
+      if (!/^https:\/\//i.test(url) && !(proxy() && /^http:\/\//i.test(url))) continue;   // http:// só passa pelo proxy
       const name = line.slice(line.lastIndexOf(',') + 1).trim() || 'Canal';
       const group = (attr(line, 'group-title').split(';')[0] || listName).trim();
       out.push({
@@ -82,7 +86,7 @@ const IptvSource = (() => {
         hue: (name.charCodeAt(0) * 37) % 360,
         source: 'iptv',
         live: true,
-        resolve: async () => ({ url, hls: true }),
+        resolve: async () => ({ url: via(url), hls: true }),
       });
     }
     return out;
@@ -91,7 +95,7 @@ const IptvSource = (() => {
   async function load(onPart) {
     const seen = new Set();
     await Promise.allSettled(lists().map(async (l) => {
-      const res = await fetch(l.url);
+      const res = await fetch(via(l.url));
       if (!res.ok) throw new Error(l.name + ' ' + res.status);
       const items = parse(await res.text(), l.name, l.logos).filter((t) => !seen.has(t.id) && seen.add(t.id));
       onPart && onPart(items);

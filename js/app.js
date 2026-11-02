@@ -404,10 +404,12 @@
     const msg = $('tv-add-msg');
     const epg = $('tv-add-epg').value.trim(), logos = $('tv-add-logos').value.trim();
     if ((epg && !/^https:\/\//i.test(epg)) || (logos && !/^https:\/\//i.test(logos))) { msg.textContent = 'EPG e logos também precisam ser https://.'; return; }
-    if (!/^https:\/\//i.test(url)) { msg.textContent = 'Use um link https:// (o navegador bloqueia http:// nesta página).'; return; }
+    const px = (window.RS_CONFIG && RS_CONFIG.proxyUrl || '').replace(/\/+$/, '');
+    if (!/^https:\/\//i.test(url) && !(px && /^http:\/\//i.test(url))) { msg.textContent = 'Use um link https:// (http:// só funciona com o proxy configurado).'; return; }
+    const fetchUrl = /^http:/i.test(url) ? `${px}/?url=${encodeURIComponent(url)}` : url;
     msg.textContent = 'Verificando…';
     let body = '';
-    try { body = await (await fetch(url)).text(); } catch { /* sem CORS: tenta tocar mesmo assim */ }
+    try { body = await (await fetch(fetchUrl)).text(); } catch { /* sem CORS: tenta tocar mesmo assim */ }
     if (body.includes('#EXTINF') && !body.includes('#EXT-X-')) {
       let host = url; try { host = new URL(url).hostname; } catch { /* ignora */ }
       IptvSource.add(host, url, epg, logos);
@@ -417,7 +419,7 @@
       return;
     }
     const ch = { id: 'tv:' + url, title: 'Canal avulso', genre: 'Avulso', desc: 'Ao vivo · link colado', hue: 200,
-      source: 'iptv', live: true, poster: '', resolve: async () => ({ url, hls: true }) };
+      source: 'iptv', live: true, poster: '', resolve: async () => ({ url: fetchUrl, hls: true }) };
     remote = [ch];
     msg.textContent = '';
     $('tv-add-url').value = '';
