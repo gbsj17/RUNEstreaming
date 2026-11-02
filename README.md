@@ -15,7 +15,6 @@ Site de streaming estático (HTML, CSS e JavaScript puro, sem build).
 ```
 index.html        página única
 css/style.css     estilos
-js/catalog.js     amostras locais (edite aqui para adicionar títulos)
 js/sources/       fontes de dados (archive.js, jellyfin.js, tmdb.js)
 js/cloud.js       conta e sincronização (Supabase)
 js/config.js      URL e chave anônima do Supabase
@@ -47,11 +46,3 @@ Opcional. Guarda a chave do TMDB, a sessão do Jellyfin, a Minha lista e o progr
 3. Project Settings > API: copie a **Project URL** e a chave **anon public** para `js/config.js`. Essas duas são públicas por design; **nunca** use a `service_role`.
 4. Authentication > Providers > Email: para testar sem confirmar e-mail, desligue "Confirm email".
 5. No site, botão **Conta** > criar conta ou entrar. Depois disso a chave do TMDB (botão **Capas**) fica salva na sua conta.
-
-## Adicionar um título local
-
-Inclua um objeto em `js/catalog.js` com `id`, `title`, `year`, `genre`, `desc`, `video` (URL .mp4) e `hue` (0–360, cor do pôster).
-
-## Conteúdo de exemplo
-
-Os vídeos do catálogo são filmes abertos da Blender Foundation (CC BY), usados apenas como demonstração.

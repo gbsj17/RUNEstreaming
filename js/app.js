@@ -4,9 +4,8 @@
   const modal = $('player-modal'), video = $('video');
   const dlg = $('jf-modal');
 
-  const LocalSource = { label: 'Amostras · Blender Foundation', load: async () => LOCAL_CATALOG };
   JellyfinSource.byGenre = true;
-  const SOURCES = [JellyfinSource, IptvSource, Tmdb, ArchiveSource, LocalSource];
+  const SOURCES = [JellyfinSource, IptvSource, Tmdb, ArchiveSource];
 
   // Estado persistido (localStorage pode falhar em modo privado)
   const store = {
@@ -28,6 +27,7 @@
   let searching = false;
   let tvGroup = '';                           // categoria selecionada na TV ao vivo ('' = todas)
   let tvOrder = [];                           // ids dos canais exibidos, para trocar de canal
+  let zapTries = 0;                           // canais seguidos que falharam (para não pular para sempre)
   let favs = new Set(store.get('favs', []));
 
   // Sincroniza tudo com a conta (se logado). localStorage continua como cache local.
@@ -212,7 +212,14 @@
     hls.loadSource(url);
     hls.attachMedia(video);
     hls.on(Hls.Events.ERROR, (_, data) => {
-      if (data.fatal) $('player-desc').textContent = 'Este canal não respondeu (offline, bloqueado ou sem CORS).';
+      if (!data.fatal) return;
+      if (current && current.live && zapTries < 6) {
+        zapTries++;
+        $('player-desc').textContent = `Canal sem resposta, tentando o próximo… (${zapTries}/6)`;
+        setTimeout(() => { if (current && current.live) zap(1); }, 1200);
+      } else {
+        $('player-desc').textContent = 'Este canal não respondeu (offline, bloqueado ou sem CORS).';
+      }
     });
   }
 
@@ -480,6 +487,7 @@
   });
   video.addEventListener('timeupdate', () => { if (Math.round(video.currentTime) % 5 === 0) saveProgress(); });
   video.addEventListener('pause', saveProgress);
+  video.addEventListener('playing', () => { zapTries = 0; });
 
   document.querySelectorAll('.tab[data-view]').forEach((b) => b.addEventListener('click', () => {
     view = b.dataset.view;
