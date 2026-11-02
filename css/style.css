@@ -81,3 +81,13 @@ main { padding-bottom: 40px; min-height: 80vh; }
   .search { width: 100%; order: 3; }
   .card { width: 140px; }
 }
+
+.dialog { max-width: 420px; padding: 20px; }
+.dialog h2 { margin: 0 0 12px; }
+.dialog label { display: block; margin-bottom: 12px; color: var(--muted); font-size: .9rem; }
+.dialog input {
+  display: block; width: 100%; margin-top: 4px; padding: 9px 12px; border-radius: 8px;
+  border: 1px solid #ffffff22; background: var(--bg); color: var(--text);
+}
+.dialog input:focus { outline: 2px solid var(--accent); }
+.form-error { color: #f87171; min-height: 1.5em; margin: 12px 0 0; font-size: .9rem; }

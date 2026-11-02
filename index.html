@@ -14,6 +14,7 @@
       <button class="tab is-active" data-view="home">Início</button>
       <button class="tab" data-view="list">Minha lista</button>
     </nav>
+    <button class="tab" id="jf-btn" type="button">Conectar Jellyfin</button>
     <input id="search" class="search" type="search" placeholder="Buscar títulos…" aria-label="Buscar títulos" autocomplete="off">
   </header>
 
@@ -34,9 +35,31 @@
     </div>
   </div>
 
-  <footer class="footer">© RUNEstreaming · Vídeos de exemplo da Blender Foundation (CC BY)</footer>
+  <div class="modal" id="jf-modal" role="dialog" aria-modal="true" aria-label="Conectar Jellyfin" hidden>
+    <div class="player-box dialog">
+      <h2>Jellyfin</h2>
+      <form id="jf-form">
+        <label>Servidor (HTTPS)<input name="server" type="url" placeholder="https://meu-servidor.exemplo.com" required></label>
+        <label>Usuário<input name="user" autocomplete="username" required></label>
+        <label>Senha<input name="pass" type="password" autocomplete="current-password"></label>
+        <div class="actions">
+          <button class="btn primary" type="submit">Entrar</button>
+          <button class="btn" type="button" id="jf-cancel">Cancelar</button>
+        </div>
+      </form>
+      <div id="jf-connected" hidden>
+        <p>Conectado. Sua biblioteca aparece na tela inicial.</p>
+        <button class="btn" type="button" id="jf-logout">Desconectar</button>
+      </div>
+      <p class="form-error" id="jf-error" role="alert"></p>
+    </div>
+  </div>
+
+  <footer class="footer">© RUNEstreaming · Domínio público via Internet Archive · Amostras da Blender Foundation (CC BY)</footer>
 
   <script src="js/catalog.js"></script>
+  <script src="js/sources/archive.js"></script>
+  <script src="js/sources/jellyfin.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
