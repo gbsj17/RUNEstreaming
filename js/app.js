@@ -6,7 +6,7 @@
 
   const LocalSource = { label: 'Amostras · Blender Foundation', load: async () => LOCAL_CATALOG };
   JellyfinSource.byGenre = true;
-  const SOURCES = [JellyfinSource, ArchiveSource, LocalSource];
+  const SOURCES = [JellyfinSource, Tmdb, ArchiveSource, LocalSource];
 
   // Estado persistido (localStorage pode falhar em modo privado)
   const store = {
@@ -73,7 +73,7 @@
       <h1>${esc(t.title)}</h1>
       <p>${esc(t.desc)}</p>
       <div class="actions">
-        <button class="btn primary" data-play="${esc(t.id)}">▶ Assistir</button>
+        <button class="btn primary" data-play="${esc(t.id)}">${t.source === 'tmdb' ? 'Detalhes e trailer' : '▶ Assistir'}</button>
         <button class="btn" data-toggle="${esc(t.id)}">${myList.has(t.id) ? '✓ Na minha lista' : '+ Minha lista'}</button>
       </div></div>`;
     hero.hidden = false;
@@ -161,9 +161,56 @@
     hls.attachMedia(video);
   }
 
+  // Detalhes de títulos do TMDB: trailer e onde assistir legalmente (o vídeo completo não é hospedado aqui).
+  const det = $('det-modal');
+  const chips = (label, names) => names.length
+    ? `<p class="where"><b>${label}</b> ${names.map((n) => `<span class="chip">${esc(n)}</span>`).join('')}</p>` : '';
+
+  async function openDetail(t) {
+    $('det-title').textContent = t.title;
+    $('det-meta').textContent = [t.year, t.type === 'tv' ? 'Série' : 'Filme'].filter(Boolean).join(' · ');
+    $('det-desc').textContent = t.desc;
+    $('det-trailer').innerHTML = '';
+    $('det-where').innerHTML = '<p class="hint">Carregando…</p>';
+    const btn = $('det-list');
+    btn.textContent = myList.has(t.id) ? '✓ Na minha lista' : '+ Minha lista';
+    btn.onclick = () => { toggleList(t.id); btn.textContent = myList.has(t.id) ? '✓ Na minha lista' : '+ Minha lista'; };
+    det.hidden = false;
+    document.body.classList.add('no-scroll');
+    try {
+      const d = await Tmdb.details(t);
+      if (det.hidden) return;
+      $('det-meta').textContent = [t.year, t.type === 'tv' ? 'Série' : 'Filme', d.genres, d.runtime ? d.runtime + ' min' : '']
+        .filter(Boolean).join(' · ');
+      if (d.trailerKey) {
+        $('det-trailer').innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(d.trailerKey)}?rel=0" title="Trailer" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
+      } else {
+        $('det-trailer').innerHTML = `<div class="no-trailer" style="${posterStyle(t)}"></div>`;
+      }
+      const any = d.stream.length || d.rent.length || d.buy.length;
+      $('det-where').innerHTML = any
+        ? chips('Assistir em', d.stream) + chips('Alugar em', d.rent) + chips('Comprar em', d.buy)
+          + (d.link ? `<p><a class="btn primary" href="${esc(d.link)}" target="_blank" rel="noopener">Abrir onde assistir</a></p>` : '')
+        : '<p class="hint">Ainda não disponível em serviços no Brasil.</p>';
+    } catch (err) {
+      console.warn(err);
+      $('det-where').innerHTML = '<p class="hint">Não foi possível carregar os detalhes.</p>';
+    }
+  }
+
+  function closeDetail() {
+    if (det.hidden) return;
+    $('det-trailer').innerHTML = '';
+    det.hidden = true;
+    document.body.classList.remove('no-scroll');
+    render();
+  }
+  $('det-close').addEventListener('click', closeDetail);
+
   async function openPlayer(id) {
     const t = byId(id);
     if (!t) return;
+    if (t.source === 'tmdb') return openDetail(t);
     current = t;
     $('player-title').textContent = t.title;
     $('player-desc').textContent = t.desc;
@@ -300,11 +347,12 @@
     if (e.target === dlg) dlg.hidden = true;
     if (e.target === tm) tm.hidden = true;
     if (e.target === ac) ac.hidden = true;
+    if (e.target === det) closeDetail();
   });
   $('player-close').addEventListener('click', closePlayer);
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
-    if (!dlg.hidden) dlg.hidden = true; else if (!tm.hidden) tm.hidden = true; else if (!ac.hidden) ac.hidden = true; else closePlayer();
+    if (!det.hidden) closeDetail(); else if (!dlg.hidden) dlg.hidden = true; else if (!tm.hidden) tm.hidden = true; else if (!ac.hidden) ac.hidden = true; else closePlayer();
   });
   video.addEventListener('timeupdate', () => { if (Math.round(video.currentTime) % 5 === 0) saveProgress(); });
   video.addEventListener('pause', saveProgress);

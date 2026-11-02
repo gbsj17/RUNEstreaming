@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>RUNEstreaming</title>
   <meta name="description" content="RUNEstreaming — catálogo de filmes e séries para assistir online.">
-  <link rel="stylesheet" href="css/style.css?v=7">
+  <link rel="stylesheet" href="css/style.css?v=8">
 </head>
 <body>
   <header class="topbar" id="topbar">
@@ -33,6 +33,20 @@
       <div class="player-info">
         <h2 id="player-title"></h2>
         <p id="player-desc"></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="det-modal" role="dialog" aria-modal="true" aria-label="Detalhes" hidden>
+    <div class="player-box det">
+      <button class="close" id="det-close" aria-label="Fechar">&times;</button>
+      <div class="trailer" id="det-trailer"></div>
+      <div class="player-info">
+        <h2 id="det-title"></h2>
+        <p class="det-meta" id="det-meta"></p>
+        <p id="det-desc"></p>
+        <div id="det-where"></div>
+        <div class="actions"><button class="btn" id="det-list" type="button"></button></div>
       </div>
     </div>
   </div>
@@ -97,14 +111,14 @@
     </div>
   </div>
 
-  <footer class="footer">© RUNEstreaming · Domínio público via Internet Archive · Amostras da Blender Foundation (CC BY)</footer>
+  <footer class="footer">© RUNEstreaming · Domínio público via Internet Archive · Amostras da Blender Foundation (CC BY)<br>Informações de filmes e séries: TMDB. Este produto usa a API do TMDB mas não é endossado ou certificado por ele. Disponibilidade: JustWatch.</footer>
 
-  <script src="js/config.js?v=7"></script>
-  <script src="js/cloud.js?v=7"></script>
-  <script src="js/catalog.js?v=7"></script>
-  <script src="js/sources/archive.js?v=7"></script>
-  <script src="js/sources/jellyfin.js?v=7"></script>
-  <script src="js/sources/tmdb.js?v=7"></script>
-  <script src="js/app.js?v=7"></script>
+  <script src="js/config.js?v=8"></script>
+  <script src="js/cloud.js?v=8"></script>
+  <script src="js/catalog.js?v=8"></script>
+  <script src="js/sources/archive.js?v=8"></script>
+  <script src="js/sources/jellyfin.js?v=8"></script>
+  <script src="js/sources/tmdb.js?v=8"></script>
+  <script src="js/app.js?v=8"></script>
 </body>
 </html>
