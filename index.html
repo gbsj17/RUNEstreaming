@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>RUNEstreaming</title>
   <meta name="description" content="RUNEstreaming — catálogo de filmes e séries para assistir online.">
-  <link rel="stylesheet" href="css/style.css?v=20">
+  <link rel="stylesheet" href="css/style.css?v=21">
 </head>
 <body>
   <header class="topbar" id="topbar">
@@ -31,6 +31,11 @@
 
   <main id="main">
     <section class="hero" id="hero" hidden></section>
+    <form class="tvadd" id="tv-add" hidden>
+      <input id="tv-add-url" type="url" required placeholder="Cole aqui o link de uma lista (.m3u) ou de um canal (.m3u8)">
+      <button class="btn primary" type="submit">Adicionar / assistir</button>
+      <span class="hint" id="tv-add-msg"></span>
+    </form>
     <div class="tvbar" id="tvbar" hidden></div>
     <div id="rows"></div>
     <p class="empty" id="empty" hidden></p>
@@ -147,12 +152,12 @@
 
   <footer class="footer">© RUNEstreaming · Domínio público via Internet Archive<br>Informações de filmes e séries: TMDB. Este produto usa a API do TMDB mas não é endossado ou certificado por ele. Disponibilidade: JustWatch.</footer>
 
-  <script src="js/config.js?v=20"></script>
-  <script src="js/cloud.js?v=20"></script>
-  <script src="js/sources/archive.js?v=20"></script>
-  <script src="js/sources/jellyfin.js?v=20"></script>
-  <script src="js/sources/iptv.js?v=20"></script>
-  <script src="js/sources/tmdb.js?v=20"></script>
-  <script src="js/app.js?v=20"></script>
+  <script src="js/config.js?v=21"></script>
+  <script src="js/cloud.js?v=21"></script>
+  <script src="js/sources/archive.js?v=21"></script>
+  <script src="js/sources/jellyfin.js?v=21"></script>
+  <script src="js/sources/iptv.js?v=21"></script>
+  <script src="js/sources/tmdb.js?v=21"></script>
+  <script src="js/app.js?v=21"></script>
 </body>
 </html>

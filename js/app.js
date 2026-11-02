@@ -133,6 +133,7 @@
     const q = search.value.trim().toLowerCase();
     hero.hidden = true;
     $('tvbar').hidden = true;
+    $('tv-add').hidden = view !== 'tv';
     document.body.dataset.view = view;
     if (view === 'tv') return renderTv(q);
 
@@ -394,6 +395,31 @@
       $('jf-error').textContent = err.message === 'Failed to fetch'
         ? 'Não foi possível acessar o servidor (verifique HTTPS e CORS).' : err.message;
     }
+  });
+
+  // Campo da aba TV: link de lista (.m3u, vira uma lista salva) ou de um canal (.m3u8, toca na hora).
+  $('tv-add').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const url = $('tv-add-url').value.trim();
+    const msg = $('tv-add-msg');
+    if (!/^https:\/\//i.test(url)) { msg.textContent = 'Use um link https:// (o navegador bloqueia http:// nesta página).'; return; }
+    msg.textContent = 'Verificando…';
+    let body = '';
+    try { body = await (await fetch(url)).text(); } catch { /* sem CORS: tenta tocar mesmo assim */ }
+    if (body.includes('#EXTINF') && !body.includes('#EXT-X-')) {
+      let host = url; try { host = new URL(url).hostname; } catch { /* ignora */ }
+      IptvSource.add(host, url);
+      $('tv-add-url').value = '';
+      msg.textContent = 'Lista adicionada.';
+      loadCatalog();
+      return;
+    }
+    const ch = { id: 'tv:' + url, title: 'Canal avulso', genre: 'Avulso', desc: 'Ao vivo · link colado', hue: 200,
+      source: 'iptv', live: true, poster: '', resolve: async () => ({ url, hls: true }) };
+    remote = [ch];
+    msg.textContent = '';
+    $('tv-add-url').value = '';
+    openPlayer(ch.id);
   });
 
   // Listas de TV ao vivo
