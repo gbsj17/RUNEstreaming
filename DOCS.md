@@ -75,7 +75,18 @@ Guarda a chave do TMDB, a sessão do Jellyfin, a Minha lista e o progresso, vale
 - **Baixar .txt**;
 - **Abrir issue no GitHub** com o relatório já preenchido.
 
-Nada é enviado sozinho. Tokens, senhas e a chave do TMDB são removidos.
+O relatório só é enviado quando você usa um dos botões. Tokens, senhas e a chave do TMDB são removidos.
+
+### Logs no servidor
+
+Com o proxy (seção 5) e um KV configurado, todo erro (mensagem de erro na tela, erro de JavaScript, falha de rede, erro do player, lista de TV que falhou) é enviado em segundo plano ao Worker e gravado por 30 dias. O envio é anônimo (id de sessão aleatório, sem IP guardado), sem repetir a mesma mensagem por 1 minuto e com limite de 60 envios por visita.
+
+1. `npx wrangler kv namespace create LOGS` e cole o `id` no bloco `[[kv_namespaces]]` de `worker/wrangler.toml` (tirando os `#`).
+2. `npx wrangler secret put ADMIN_TOKEN` e escolha uma senha.
+3. `npx wrangler deploy`.
+4. Ler os logs (últimos 100): `curl -H "Authorization: Bearer SUA_SENHA" https://SEU-WORKER.workers.dev/logs`.
+
+Sem `proxyUrl` ou sem KV, os erros ficam só no registro local do navegador (⚙ > Reportar bug).
 
 ## 9. Estrutura do projeto
 

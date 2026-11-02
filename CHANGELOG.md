@@ -1,6 +1,11 @@
 # Novidades (patch notes)
 
-Versão atual: **1.1.0**. A mesma lista aparece no site em `docs.html#novidades`.
+Versão atual: **1.2.0**. A mesma lista aparece no site em `docs.html#novidades`.
+
+## 1.2.0
+
+- **Logs no servidor**: toda mensagem de erro mostrada na tela (player, listas de TV, Jellyfin, conta), erro de JavaScript e falha de rede vai para o registro do coletor e é gravada no servidor (Cloudflare Worker + KV, guardada por 30 dias). Mensagens repetidas são enviadas no máximo 1 vez por minuto. Tokens e senhas são removidos antes do envio.
+- Consulta dos logs: `GET /logs` no Worker, protegido por `ADMIN_TOKEN`.
 
 ## 1.1.0
 

@@ -5,3 +5,10 @@ compatibility_date = "2025-01-01"
 [vars]
 # Páginas autorizadas a usar o proxy (separe por vírgula). Troque ao usar domínio próprio.
 ALLOWED_ORIGINS = "https://gbsj17.github.io"
+
+# Registro de erros no servidor (opcional):
+#   npx wrangler kv namespace create LOGS     -> copie o id para o bloco abaixo e tire os "#"
+#   npx wrangler secret put ADMIN_TOKEN       -> senha para ler os logs em GET /logs
+# [[kv_namespaces]]
+# binding = "LOGS"
+# id = "COLE_O_ID_AQUI"

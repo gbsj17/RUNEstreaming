@@ -114,6 +114,7 @@ const IptvSource = (() => {
         if (l.epg) applyEpg(l.epg, items).catch((err) => console.warn('EPG', err));
       } catch (err) {
         status[l.url] = 'erro: ' + (err.message === 'Failed to fetch' ? 'não foi possível acessar o link (offline, CORS ou link http:// encurtado)' : err.message);
+        if (window.Debug) Debug.add('lista', l.url.slice(0, 120), status[l.url]);
         throw err;
       }
     }));
