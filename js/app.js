@@ -300,7 +300,7 @@
     $('zap').hidden = !t.live;
     if (t.live) store.set('lastTv', t.id);
     $('player-title').textContent = t.title;
-    $('player-desc').textContent = t.desc;
+    $('player-desc').textContent = t.live ? t.desc : 'Carregando… o servidor do Internet Archive às vezes leva alguns segundos para começar.';
     modal.hidden = false;
     document.body.classList.add('no-scroll');
     try {
@@ -487,7 +487,10 @@
   });
   video.addEventListener('timeupdate', () => { if (Math.round(video.currentTime) % 5 === 0) saveProgress(); });
   video.addEventListener('pause', saveProgress);
-  video.addEventListener('playing', () => { zapTries = 0; });
+  video.addEventListener('playing', () => { zapTries = 0; if (current) $('player-desc').textContent = current.desc; });
+  video.addEventListener('error', () => {
+    if (current && !current.live) $('player-desc').textContent = 'Este arquivo não pôde ser carregado agora. Tente de novo em instantes ou escolha outro título.';
+  });
 
   document.querySelectorAll('.tab[data-view]').forEach((b) => b.addEventListener('click', () => {
     view = b.dataset.view;
