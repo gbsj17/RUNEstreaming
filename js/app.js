@@ -365,9 +365,19 @@
     $('tv-lists').innerHTML = IptvSource.lists().map((l, i) =>
       `<li><span>${esc(l.name)}</span><button class="btn" data-rm="${i}" type="button">Remover</button></li>`).join('')
       || '<li class="hint">Nenhuma lista.</li>';
+    const have = new Set(IptvSource.lists().map((l) => l.url));
+    $('tv-presets').innerHTML = IptvSource.PRESETS.filter((p) => !have.has(p.url)).map((p, i) =>
+      `<button class="chip-btn" type="button" data-preset="${esc(p.url)}">+ ${esc(p.name)}</button>`).join('')
+      || '<span class="hint">Todas já adicionadas.</span>';
   };
   $('tv-btn').addEventListener('click', () => { renderLists(); tv.hidden = false; });
   $('tv-close').addEventListener('click', () => { tv.hidden = true; });
+  $('tv-presets').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-preset]');
+    if (!b) return;
+    const p = IptvSource.PRESETS.find((x) => x.url === b.dataset.preset);
+    IptvSource.add(p.name, p.url); renderLists(); loadCatalog();
+  });
   $('tv-lists').addEventListener('click', (e) => {
     const b = e.target.closest('[data-rm]');
     if (!b) return;

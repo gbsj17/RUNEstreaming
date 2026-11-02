@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>RUNEstreaming</title>
   <meta name="description" content="RUNEstreaming — catálogo de filmes e séries para assistir online.">
-  <link rel="stylesheet" href="css/style.css?v=12">
+  <link rel="stylesheet" href="css/style.css?v=13">
 </head>
 <body>
   <header class="topbar" id="topbar">
@@ -56,6 +56,8 @@
       <h2>TV ao vivo (IPTV)</h2>
       <p class="hint">Adicione listas M3U do seu provedor ou de canais abertos. As listas ficam só neste navegador. Os canais precisam usar HTTPS e liberar CORS para tocar aqui.</p>
       <ul class="tv-lists" id="tv-lists"></ul>
+      <p class="hint">Listas gratuitas prontas:</p>
+      <div class="presets" id="tv-presets"></div>
       <form id="tv-form">
         <label>Nome<input name="name" placeholder="Meu provedor"></label>
         <label>URL da lista (.m3u / .m3u8)<input name="url" type="url" placeholder="https://..." required></label>
@@ -144,13 +146,13 @@
 
   <footer class="footer">© RUNEstreaming · Domínio público via Internet Archive · Amostras da Blender Foundation (CC BY)<br>Informações de filmes e séries: TMDB. Este produto usa a API do TMDB mas não é endossado ou certificado por ele. Disponibilidade: JustWatch.</footer>
 
-  <script src="js/config.js?v=12"></script>
-  <script src="js/cloud.js?v=12"></script>
-  <script src="js/catalog.js?v=12"></script>
-  <script src="js/sources/archive.js?v=12"></script>
-  <script src="js/sources/jellyfin.js?v=12"></script>
-  <script src="js/sources/iptv.js?v=12"></script>
-  <script src="js/sources/tmdb.js?v=12"></script>
-  <script src="js/app.js?v=12"></script>
+  <script src="js/config.js?v=13"></script>
+  <script src="js/cloud.js?v=13"></script>
+  <script src="js/catalog.js?v=13"></script>
+  <script src="js/sources/archive.js?v=13"></script>
+  <script src="js/sources/jellyfin.js?v=13"></script>
+  <script src="js/sources/iptv.js?v=13"></script>
+  <script src="js/sources/tmdb.js?v=13"></script>
+  <script src="js/app.js?v=13"></script>
 </body>
 </html>

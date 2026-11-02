@@ -5,6 +5,17 @@ const IptvSource = (() => {
   const KEY = 'rs:iptv';
   const DEFAULT = [{ name: 'Canais abertos do Brasil', url: 'https://iptv-org.github.io/iptv/countries/br.m3u' }];
 
+  // Listas gratuitas e abertas do projeto iptv-org, prontas para adicionar com um clique.
+  const B = 'https://iptv-org.github.io/iptv/';
+  const PRESETS = [
+    { name: 'Em português (todos os países)', url: B + 'languages/por.m3u' },
+    { name: 'Filmes', url: B + 'categories/movies.m3u' },
+    { name: 'Séries', url: B + 'categories/series.m3u' },
+    { name: 'Infantil', url: B + 'categories/kids.m3u' },
+    { name: 'Esportes', url: B + 'categories/sports.m3u' },
+    { name: 'Notícias', url: B + 'categories/news.m3u' },
+  ];
+
   const read = () => { try { return JSON.parse(localStorage.getItem(KEY)); } catch { return null; } };
   const write = (v) => { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch { /* ignora */ } };
 
@@ -55,5 +66,5 @@ const IptvSource = (() => {
     return [];
   }
 
-  return { label: 'TV ao vivo', byGenre: true, load, lists, add, remove, reset };
+  return { label: 'TV ao vivo', byGenre: true, load, lists, add, remove, reset, PRESETS };
 })();

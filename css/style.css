@@ -128,3 +128,4 @@ a.btn { display: inline-block; text-decoration: none; color: var(--text); }
 .fav { position: absolute; top: 4px; right: 8px; font-size: 1.2rem; color: #fbbf24; line-height: 1; }
 .fav:hover { transform: scale(1.2); }
 #zap { margin-top: 12px; }
+.presets { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
