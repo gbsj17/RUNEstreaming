@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>RUNEstreaming</title>
   <meta name="description" content="RUNEstreaming — catálogo de filmes e séries para assistir online.">
-  <link rel="stylesheet" href="css/style.css?v=8">
+  <link rel="stylesheet" href="css/style.css?v=9">
 </head>
 <body>
   <header class="topbar" id="topbar">
@@ -14,6 +14,7 @@
       <button class="tab is-active" data-view="home">Início</button>
       <button class="tab" data-view="list">Minha lista</button>
     </nav>
+    <button class="tab" id="tv-btn" type="button">TV</button>
     <button class="tab" id="ac-btn" type="button">Conta</button>
     <button class="tab" id="tm-btn" type="button">Capas</button>
     <button class="tab" id="jf-btn" type="button">Conectar Jellyfin</button>
@@ -34,6 +35,23 @@
         <h2 id="player-title"></h2>
         <p id="player-desc"></p>
       </div>
+    </div>
+  </div>
+
+  <div class="modal" id="tv-modal" role="dialog" aria-modal="true" aria-label="TV ao vivo" hidden>
+    <div class="player-box dialog">
+      <h2>TV ao vivo (IPTV)</h2>
+      <p class="hint">Adicione listas M3U do seu provedor ou de canais abertos. As listas ficam só neste navegador. Os canais precisam usar HTTPS e liberar CORS para tocar aqui.</p>
+      <ul class="tv-lists" id="tv-lists"></ul>
+      <form id="tv-form">
+        <label>Nome<input name="name" placeholder="Meu provedor"></label>
+        <label>URL da lista (.m3u / .m3u8)<input name="url" type="url" placeholder="https://..." required></label>
+        <div class="actions">
+          <button class="btn primary" type="submit">Adicionar</button>
+          <button class="btn" type="button" id="tv-reset">Restaurar padrão</button>
+          <button class="btn" type="button" id="tv-close">Fechar</button>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -113,12 +131,13 @@
 
   <footer class="footer">© RUNEstreaming · Domínio público via Internet Archive · Amostras da Blender Foundation (CC BY)<br>Informações de filmes e séries: TMDB. Este produto usa a API do TMDB mas não é endossado ou certificado por ele. Disponibilidade: JustWatch.</footer>
 
-  <script src="js/config.js?v=8"></script>
-  <script src="js/cloud.js?v=8"></script>
-  <script src="js/catalog.js?v=8"></script>
-  <script src="js/sources/archive.js?v=8"></script>
-  <script src="js/sources/jellyfin.js?v=8"></script>
-  <script src="js/sources/tmdb.js?v=8"></script>
-  <script src="js/app.js?v=8"></script>
+  <script src="js/config.js?v=9"></script>
+  <script src="js/cloud.js?v=9"></script>
+  <script src="js/catalog.js?v=9"></script>
+  <script src="js/sources/archive.js?v=9"></script>
+  <script src="js/sources/jellyfin.js?v=9"></script>
+  <script src="js/sources/iptv.js?v=9"></script>
+  <script src="js/sources/tmdb.js?v=9"></script>
+  <script src="js/app.js?v=9"></script>
 </body>
 </html>

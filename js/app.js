@@ -6,7 +6,7 @@
 
   const LocalSource = { label: 'Amostras · Blender Foundation', load: async () => LOCAL_CATALOG };
   JellyfinSource.byGenre = true;
-  const SOURCES = [JellyfinSource, Tmdb, ArchiveSource, LocalSource];
+  const SOURCES = [JellyfinSource, IptvSource, Tmdb, ArchiveSource, LocalSource];
 
   // Estado persistido (localStorage pode falhar em modo privado)
   const store = {
@@ -44,13 +44,16 @@
   const byId = (id) => allItems().concat(remote).find((t) => t.id === id);
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const gradient = (t) => `linear-gradient(160deg,hsl(${t.hue} 60% 38%),hsl(${(t.hue + 50) % 360} 55% 12%))`;
-  const posterStyle = (t, shade) => t.poster
+  const posterStyle = (t) => t.source === 'iptv'
+    ? (t.poster ? `background:url('${esc(t.poster)}') center 40%/60% no-repeat,${gradient(t)}` : `background:${gradient(t)}`)
+    : t.poster
     ? `background:linear-gradient(transparent 45%,#000d),url('${esc(t.poster)}') center/cover,${gradient(t)}`
     : `background:${gradient(t)}`;
 
   function card(t) {
     const pct = progress[t.id]?.pct || 0;
     return `<button class="card" data-id="${esc(t.id)}" style="${posterStyle(t)}" aria-label="Assistir ${esc(t.title)}">
+      ${t.live ? '<span class="live">AO VIVO</span>' : ''}
       <span class="card-title">${esc(t.title)}</span>
       <span class="card-meta">${esc([t.year, t.genre].filter(Boolean).join(' · '))}</span>
       ${pct > 0 ? `<span class="bar"><i style="width:${pct}%"></i></span>` : ''}
@@ -64,7 +67,7 @@
 
   function renderHero() {
     const items = allItems();
-    const t = items.find((x) => x.poster && x.source !== 'archive') || items.find((x) => x.poster) || items[0];
+    const t = items.find((x) => x.poster && x.source !== 'archive' && !x.live) || items.find((x) => x.poster) || items[0];
     if (!t) return;
     hero.style.cssText = t.poster
       ? `background:linear-gradient(90deg,#000c 20%,transparent),url("${esc(t.poster)}") center/cover,${gradient(t)}`
@@ -245,7 +248,7 @@
   }
 
   function saveProgress() {
-    if (!current || !video.duration) return;
+    if (!current || current.live || !isFinite(video.duration) || !video.duration) return;
     progress[current.id] = { pct: Math.round((video.currentTime / video.duration) * 100) };
     store.set('progress', progress);
     sync();
@@ -277,6 +280,28 @@
       $('jf-error').textContent = err.message === 'Failed to fetch'
         ? 'Não foi possível acessar o servidor (verifique HTTPS e CORS).' : err.message;
     }
+  });
+
+  // Listas de TV ao vivo
+  const tv = $('tv-modal');
+  const renderLists = () => {
+    $('tv-lists').innerHTML = IptvSource.lists().map((l, i) =>
+      `<li><span>${esc(l.name)}</span><button class="btn" data-rm="${i}" type="button">Remover</button></li>`).join('')
+      || '<li class="hint">Nenhuma lista.</li>';
+  };
+  $('tv-btn').addEventListener('click', () => { renderLists(); tv.hidden = false; });
+  $('tv-close').addEventListener('click', () => { tv.hidden = true; });
+  $('tv-lists').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-rm]');
+    if (!b) return;
+    IptvSource.remove(+b.dataset.rm); renderLists(); loadCatalog();
+  });
+  $('tv-reset').addEventListener('click', () => { IptvSource.reset(); renderLists(); loadCatalog(); });
+  $('tv-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const f = e.target;
+    IptvSource.add(f.name.value, f.url.value);
+    f.reset(); renderLists(); loadCatalog();
   });
 
   // Conta (Supabase)
@@ -347,12 +372,13 @@
     if (e.target === dlg) dlg.hidden = true;
     if (e.target === tm) tm.hidden = true;
     if (e.target === ac) ac.hidden = true;
+    if (e.target === tv) tv.hidden = true;
     if (e.target === det) closeDetail();
   });
   $('player-close').addEventListener('click', closePlayer);
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
-    if (!det.hidden) closeDetail(); else if (!dlg.hidden) dlg.hidden = true; else if (!tm.hidden) tm.hidden = true; else if (!ac.hidden) ac.hidden = true; else closePlayer();
+    if (!det.hidden) closeDetail(); else if (!tv.hidden) tv.hidden = true; else if (!dlg.hidden) dlg.hidden = true; else if (!tm.hidden) tm.hidden = true; else if (!ac.hidden) ac.hidden = true; else closePlayer();
   });
   video.addEventListener('timeupdate', () => { if (Math.round(video.currentTime) % 5 === 0) saveProgress(); });
   video.addEventListener('pause', saveProgress);
