@@ -91,3 +91,5 @@ main { padding-bottom: 40px; min-height: 80vh; }
 }
 .dialog input:focus { outline: 2px solid var(--accent); }
 .form-error { color: #f87171; min-height: 1.5em; margin: 12px 0 0; font-size: .9rem; }
+.hint { color: var(--muted); font-size: .9rem; margin: 0 0 14px; }
+.hint a { color: var(--accent-2); }

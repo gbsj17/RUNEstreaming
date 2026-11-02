@@ -5,6 +5,7 @@
   const dlg = $('jf-modal');
 
   const LocalSource = { label: 'Amostras · Blender Foundation', load: async () => LOCAL_CATALOG };
+  JellyfinSource.byGenre = true;
   const SOURCES = [JellyfinSource, ArchiveSource, LocalSource];
 
   // Estado persistido (localStorage pode falhar em modo privado)
@@ -22,9 +23,12 @@
   let current = null;
   let sections = [];   // [{ source, items }]
   let hls = null;
+  let remote = [];     // resultados da busca ao vivo no Archive
+  let searchTimer = null;
+  let searching = false;
 
   const allItems = () => sections.flatMap((s) => s.items);
-  const byId = (id) => allItems().find((t) => t.id === id);
+  const byId = (id) => allItems().concat(remote).find((t) => t.id === id);
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const gradient = (t) => `linear-gradient(160deg,hsl(${t.hue} 60% 38%),hsl(${(t.hue + 50) % 360} 55% 12%))`;
   const posterStyle = (t, shade) => t.poster
@@ -47,7 +51,7 @@
 
   function renderHero() {
     const items = allItems();
-    const t = items.find((x) => x.featured) || items[0];
+    const t = items.find((x) => x.poster && x.source !== 'archive') || items.find((x) => x.poster) || items[0];
     if (!t) return;
     hero.style.cssText = t.poster
       ? `background:linear-gradient(90deg,#000c 20%,transparent),url("${esc(t.poster)}") center/cover,${gradient(t)}`
@@ -70,10 +74,11 @@
     hero.hidden = true;
 
     if (q) {
-      const hits = items.filter((t) => (t.title + ' ' + t.genre).toLowerCase().includes(q));
+      const local = items.filter((t) => (t.title + ' ' + t.genre).toLowerCase().includes(q));
+      const hits = [...local, ...remote.filter((r) => !local.some((l) => l.id === r.id))];
       html = row(`Resultados para “${search.value.trim()}”`, hits);
       any = hits.length > 0;
-      empty.textContent = 'Nenhum título encontrado.';
+      empty.textContent = q.length >= 3 && searching ? 'Buscando…' : 'Nenhum título encontrado.';
     } else if (view === 'list') {
       const mine = items.filter((t) => myList.has(t.id));
       html = row('Minha lista', mine);
@@ -83,12 +88,10 @@
       renderHero();
       html += row('Continuar assistindo', items.filter((t) => progress[t.id]?.pct > 0 && progress[t.id].pct < 98));
       sections.forEach(({ source, items: list }) => {
-        html += row(source.label, list);
-        if (source === JellyfinSource) {
-          [...new Set(list.map((t) => t.genre))].forEach((g) => {
-            html += row(g, list.filter((t) => t.genre === g));
-          });
-        }
+        if (!source.byGenre) { html += row(source.label, list); return; }
+        [...new Set(list.map((t) => t.genre))].forEach((g) => {
+          html += row(g, list.filter((t) => t.genre === g));
+        });
       });
       any = items.length > 0;
       empty.textContent = 'Carregando catálogo…';
@@ -112,6 +115,7 @@
     }));
     if (!sections.length) { empty.textContent = 'Nenhum título disponível.'; return; }
     render();
+    Tmdb.enrich(allItems(), () => { if (view === 'home' && !search.value) render(); });
   }
 
   function toggleList(id) {
@@ -208,6 +212,20 @@
     }
   });
 
+  // Chave do TMDB (capas reais)
+  const tm = $('tm-modal');
+  $('tm-btn').addEventListener('click', () => {
+    $('tm-key').value = Tmdb.apiKey();
+    tm.hidden = false;
+  });
+  $('tm-cancel').addEventListener('click', () => { tm.hidden = true; });
+  $('tm-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    Tmdb.setKey($('tm-key').value);
+    tm.hidden = true;
+    loadCatalog();
+  });
+
   // Eventos
   document.addEventListener('click', (e) => {
     const c = e.target.closest('.card');
@@ -218,11 +236,12 @@
     if (tog) return toggleList(tog.dataset.toggle);
     if (e.target === modal) closePlayer();
     if (e.target === dlg) dlg.hidden = true;
+    if (e.target === tm) tm.hidden = true;
   });
   $('player-close').addEventListener('click', closePlayer);
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
-    if (!dlg.hidden) dlg.hidden = true; else closePlayer();
+    if (!dlg.hidden) dlg.hidden = true; else if (!tm.hidden) tm.hidden = true; else closePlayer();
   });
   video.addEventListener('timeupdate', () => { if (Math.round(video.currentTime) % 5 === 0) saveProgress(); });
   video.addEventListener('pause', saveProgress);
@@ -233,7 +252,19 @@
     document.querySelectorAll('.tab').forEach((x) => x.classList.toggle('is-active', x === b));
     render();
   }));
-  search.addEventListener('input', render);
+  search.addEventListener('input', () => {
+    clearTimeout(searchTimer);
+    const q = search.value.trim();
+    remote = [];
+    searching = q.length >= 3;
+    render();
+    if (!searching) return;
+    searchTimer = setTimeout(async () => {
+      try { remote = await ArchiveSource.search(q); } catch (err) { console.warn(err); }
+      searching = false;
+      if (search.value.trim() === q) render();
+    }, 400);
+  });
   window.addEventListener('scroll', () => $('topbar').classList.toggle('solid', scrollY > 20), { passive: true });
 
   loadCatalog();

@@ -1,7 +1,21 @@
-// Fonte: Internet Archive (filmes de domínio público). API aberta, sem chave.
+// Fonte: Internet Archive (filmes e séries de domínio público). API aberta, sem chave.
 const ArchiveSource = (() => {
   const SEARCH = 'https://archive.org/advancedsearch.php';
-  const PAGE = 40;
+  const BASE = 'mediatype:movies AND format:(h.264) AND NOT title:(sex)';
+
+  // Fileira -> consulta. O Archive é grande; cada fileira traz os mais assistidos.
+  const ROWS = {
+    'Clássicos': 'collection:feature_films',
+    'Animação': 'collection:animationandcartoons',
+    'Comédia': 'collection:feature_films AND subject:(comedy)',
+    'Terror': 'collection:feature_films AND subject:(horror)',
+    'Ficção científica': 'collection:feature_films AND subject:("science fiction")',
+    'Faroeste': 'collection:feature_films AND subject:(western)',
+    'Noir e crime': 'collection:feature_films AND subject:(noir OR crime)',
+    'Documentários': 'collection:feature_films AND subject:(documentary)',
+    'Séries clássicas': 'collection:classic_tv',
+  };
+  const PAGE = 30;
 
   const text = (v) => {
     const s = Array.isArray(v) ? v.join(' ') : (v || '');
@@ -19,13 +33,8 @@ const ArchiveSource = (() => {
     return { url: `https://archive.org/download/${encodeURIComponent(identifier)}/${encodeURIComponent(best.name)}` };
   }
 
-  async function load() {
-    const params = new URLSearchParams({
-      q: 'collection:feature_films AND mediatype:movies AND format:(h.264)',
-      sort: 'downloads desc',
-      rows: PAGE,
-      output: 'json',
-    });
+  async function query(q, genre, rows = PAGE) {
+    const params = new URLSearchParams({ q: `${BASE} AND ${q}`, sort: 'downloads desc', rows, output: 'json' });
     ['identifier', 'title', 'description', 'year'].forEach((f) => params.append('fl[]', f));
     const res = await fetch(`${SEARCH}?${params}`);
     if (!res.ok) throw new Error('busca ' + res.status);
@@ -34,8 +43,8 @@ const ArchiveSource = (() => {
       id: 'ia:' + d.identifier,
       title: text(d.title) || d.identifier,
       year: parseInt(d.year, 10) || '',
-      genre: 'Domínio público',
-      desc: text(d.description).slice(0, 220) || 'Filme de domínio público do Internet Archive.',
+      genre,
+      desc: text(d.description).slice(0, 260) || 'Título de domínio público do Internet Archive.',
       poster: `https://archive.org/services/img/${encodeURIComponent(d.identifier)}`,
       hue: (d.identifier.charCodeAt(0) * 37) % 360,
       source: 'archive',
@@ -43,5 +52,16 @@ const ArchiveSource = (() => {
     }));
   }
 
-  return { label: 'Internet Archive · domínio público', load };
+  async function load() {
+    const lists = await Promise.allSettled(Object.entries(ROWS).map(([genre, q]) => query(q, genre)));
+    const seen = new Set();
+    // Um título aparece só na primeira fileira em que entrou.
+    return lists.flatMap((r) => (r.status === 'fulfilled' ? r.value : []))
+      .filter((t) => !seen.has(t.id) && seen.add(t.id));
+  }
+
+  const escapeQ = (s) => s.replace(/["\\()\[\]:]/g, ' ').trim();
+  const search = (q) => query(`title:(${escapeQ(q)}*)`, 'Resultados', 40);
+
+  return { label: 'Internet Archive', byGenre: true, load, search };
 })();
