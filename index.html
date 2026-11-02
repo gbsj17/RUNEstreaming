@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RUNEstreaming</title>
+  <meta name="description" content="RUNEstreaming — catálogo de filmes e séries para assistir online.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topbar" id="topbar">
+    <a class="logo" href="#" aria-label="RUNEstreaming">RUNE<span>streaming</span></a>
+    <nav class="tabs" aria-label="Seções">
+      <button class="tab is-active" data-view="home">Início</button>
+      <button class="tab" data-view="list">Minha lista</button>
+    </nav>
+    <input id="search" class="search" type="search" placeholder="Buscar títulos…" aria-label="Buscar títulos" autocomplete="off">
+  </header>
+
+  <main id="main">
+    <section class="hero" id="hero" hidden></section>
+    <div id="rows"></div>
+    <p class="empty" id="empty" hidden></p>
+  </main>
+
+  <div class="modal" id="player-modal" role="dialog" aria-modal="true" aria-label="Player" hidden>
+    <div class="player-box">
+      <button class="close" id="player-close" aria-label="Fechar">&times;</button>
+      <video id="video" controls playsinline></video>
+      <div class="player-info">
+        <h2 id="player-title"></h2>
+        <p id="player-desc"></p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">© RUNEstreaming · Vídeos de exemplo da Blender Foundation (CC BY)</footer>
+
+  <script src="js/catalog.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
