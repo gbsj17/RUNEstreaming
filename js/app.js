@@ -133,6 +133,7 @@
     const q = search.value.trim().toLowerCase();
     hero.hidden = true;
     $('tvbar').hidden = true;
+    document.body.dataset.view = view;
     if (view === 'tv') return renderTv(q);
 
     const items = allItems().filter((t) => !t.live);
@@ -490,6 +491,9 @@
       if (search.value.trim() === q) render();
     }, 400);
   });
+  const measure = () => document.documentElement.style.setProperty('--top', $('topbar').offsetHeight + 'px');
+  window.addEventListener('resize', measure);
+  measure();
   window.addEventListener('scroll', () => $('topbar').classList.toggle('solid', scrollY > 20), { passive: true });
 
   (async () => {
