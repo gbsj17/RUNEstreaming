@@ -28,7 +28,7 @@
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const gradient = (t) => `linear-gradient(160deg,hsl(${t.hue} 60% 38%),hsl(${(t.hue + 50) % 360} 55% 12%))`;
   const posterStyle = (t, shade) => t.poster
-    ? `background:linear-gradient(transparent 45%,#000d),url("${esc(t.poster)}") center/cover,${gradient(t)}`
+    ? `background:linear-gradient(transparent 45%,#000d),url('${esc(t.poster)}') center/cover,${gradient(t)}`
     : `background:${gradient(t)}`;
 
   function card(t) {
@@ -100,12 +100,17 @@
   async function loadCatalog() {
     empty.hidden = false;
     empty.textContent = 'Carregando catálogo…';
-    const results = await Promise.allSettled(SOURCES.map((s) => s.load()));
-    sections = results
-      .map((r, i) => ({ source: SOURCES[i], items: r.status === 'fulfilled' ? r.value : [], error: r.reason }))
-      .filter((s) => s.items.length);
-    results.forEach((r, i) => { if (r.status === 'rejected') console.warn(SOURCES[i].label, r.reason); });
     $('jf-btn').textContent = JellyfinSource.isConnected() ? 'Jellyfin ✓' : 'Conectar Jellyfin';
+    sections = [];
+    // Cada fonte aparece assim que carrega, sem esperar as mais lentas.
+    await Promise.all(SOURCES.map(async (source) => {
+      let items = [];
+      try { items = await source.load(); } catch (err) { console.warn(source.label, err); }
+      if (!items.length) return;
+      sections = [...sections, { source, items }].sort((a, b) => SOURCES.indexOf(a.source) - SOURCES.indexOf(b.source));
+      if (view === 'home' && !search.value) render();
+    }));
+    if (!sections.length) { empty.textContent = 'Nenhum título disponível.'; return; }
     render();
   }
 
