@@ -3,11 +3,13 @@
 // canal precisa liberar CORS e usar HTTPS (o Pages é HTTPS); canais que não cumprem isso não tocam aqui.
 const IptvSource = (() => {
   const KEY = 'rs:iptv';
-  const DEFAULT = [{ name: 'Canais abertos do Brasil', url: 'https://iptv-org.github.io/iptv/countries/br.m3u' }];
+  const EXTRA = { name: 'Brasil (iptv-com)', url: 'https://raw.githubusercontent.com/iptv-com/iptv/main/lists/brazil.m3u' };
+  const DEFAULT = [{ name: 'Canais abertos do Brasil', url: 'https://iptv-org.github.io/iptv/countries/br.m3u' }, EXTRA];
 
   // Listas gratuitas e abertas do projeto iptv-org, prontas para adicionar com um clique.
   const B = 'https://iptv-org.github.io/iptv/';
   const PRESETS = [
+    EXTRA,
     { name: 'Em português (todos os países)', url: B + 'languages/por.m3u' },
     { name: 'Filmes', url: B + 'categories/movies.m3u' },
     { name: 'Séries', url: B + 'categories/series.m3u' },
