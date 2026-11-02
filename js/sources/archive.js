@@ -46,6 +46,7 @@ const ArchiveSource = (() => {
     title: text(d.title) || d.identifier,
     year: parseInt(d.year, 10) || '',
     genre,
+    type: genre === 'Séries clássicas' ? 'tv' : 'movie',
     desc: text(d.description).slice(0, 260) || 'Título de domínio público do Internet Archive.',
     poster: `https://archive.org/services/img/${encodeURIComponent(d.identifier)}`,
     hue: (d.identifier.charCodeAt(0) * 37) % 360,

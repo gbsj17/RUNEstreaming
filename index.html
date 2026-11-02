@@ -5,24 +5,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>RUNEstreaming</title>
   <meta name="description" content="RUNEstreaming — catálogo de filmes e séries para assistir online.">
-  <link rel="stylesheet" href="css/style.css?v=10">
+  <link rel="stylesheet" href="css/style.css?v=11">
 </head>
 <body>
   <header class="topbar" id="topbar">
     <a class="logo" href="#" aria-label="RUNEstreaming">RUNE<span>streaming</span></a>
     <nav class="tabs" aria-label="Seções">
       <button class="tab is-active" data-view="home">Início</button>
+      <button class="tab" data-view="movies">Filmes</button>
+      <button class="tab" data-view="series">Séries</button>
+      <button class="tab tab-tv" data-view="tv">TV ao vivo</button>
       <button class="tab" data-view="list">Minha lista</button>
     </nav>
-    <button class="tab" id="tv-btn" type="button">TV</button>
-    <button class="tab" id="ac-btn" type="button">Conta</button>
-    <button class="tab" id="tm-btn" type="button">Capas</button>
-    <button class="tab" id="jf-btn" type="button">Conectar Jellyfin</button>
+    <details class="menu" id="menu">
+      <summary aria-label="Ajustes">⚙</summary>
+      <div class="menu-items">
+        <button class="menu-item" id="tv-btn" type="button">Listas de TV (IPTV)</button>
+        <button class="menu-item" id="jf-btn" type="button">Conectar Jellyfin</button>
+        <button class="menu-item" id="tm-btn" type="button">Capas (TMDB)</button>
+        <button class="menu-item" id="ac-btn" type="button">Conta</button>
+      </div>
+    </details>
     <input id="search" class="search" type="search" placeholder="Buscar títulos…" aria-label="Buscar títulos" autocomplete="off">
   </header>
 
   <main id="main">
     <section class="hero" id="hero" hidden></section>
+    <div class="tvbar" id="tvbar" hidden></div>
     <div id="rows"></div>
     <p class="empty" id="empty" hidden></p>
   </main>
@@ -34,6 +43,10 @@
       <div class="player-info">
         <h2 id="player-title"></h2>
         <p id="player-desc"></p>
+        <div class="actions" id="zap" hidden>
+          <button class="btn" id="zap-prev" type="button">◀ Canal anterior</button>
+          <button class="btn" id="zap-next" type="button">Próximo canal ▶</button>
+        </div>
       </div>
     </div>
   </div>
@@ -131,13 +144,13 @@
 
   <footer class="footer">© RUNEstreaming · Domínio público via Internet Archive · Amostras da Blender Foundation (CC BY)<br>Informações de filmes e séries: TMDB. Este produto usa a API do TMDB mas não é endossado ou certificado por ele. Disponibilidade: JustWatch.</footer>
 
-  <script src="js/config.js?v=10"></script>
-  <script src="js/cloud.js?v=10"></script>
-  <script src="js/catalog.js?v=10"></script>
-  <script src="js/sources/archive.js?v=10"></script>
-  <script src="js/sources/jellyfin.js?v=10"></script>
-  <script src="js/sources/iptv.js?v=10"></script>
-  <script src="js/sources/tmdb.js?v=10"></script>
-  <script src="js/app.js?v=10"></script>
+  <script src="js/config.js?v=11"></script>
+  <script src="js/cloud.js?v=11"></script>
+  <script src="js/catalog.js?v=11"></script>
+  <script src="js/sources/archive.js?v=11"></script>
+  <script src="js/sources/jellyfin.js?v=11"></script>
+  <script src="js/sources/iptv.js?v=11"></script>
+  <script src="js/sources/tmdb.js?v=11"></script>
+  <script src="js/app.js?v=11"></script>
 </body>
 </html>

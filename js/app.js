@@ -26,6 +26,9 @@
   let remote = [];     // resultados da busca ao vivo no Archive
   let searchTimer = null;
   let searching = false;
+  let tvGroup = '';                           // categoria selecionada na TV ao vivo ('' = todas)
+  let tvOrder = [];                           // ids dos canais exibidos, para trocar de canal
+  let favs = new Set(store.get('favs', []));
 
   // Sincroniza tudo com a conta (se logado). localStorage continua como cache local.
   let syncTimer = null;
@@ -53,7 +56,7 @@
   function card(t) {
     const pct = progress[t.id]?.pct || 0;
     return `<button class="card" data-id="${esc(t.id)}" style="${posterStyle(t)}" aria-label="Assistir ${esc(t.title)}">
-      ${t.live ? '<span class="live">AO VIVO</span>' : ''}
+      ${t.live ? `<span class="live">AO VIVO</span><span class="fav" data-fav="${esc(t.id)}" title="Favorito">${favs.has(t.id) ? '★' : '☆'}</span>` : ''}
       <span class="card-title">${esc(t.title)}</span>
       <span class="card-meta">${esc([t.year, t.genre].filter(Boolean).join(' · '))}</span>
       ${pct > 0 ? `<span class="bar"><i style="width:${pct}%"></i></span>` : ''}
@@ -82,16 +85,64 @@
     hero.hidden = false;
   }
 
+  const isSeries = (t) => t.type === 'tv';
+  const isMovie = (t) => !t.live && t.type !== 'tv';
+
+  // Fileiras por gênero para as fontes que agrupam (byGenre) e uma fileira por fonte para as demais.
+  function genreRows(filter) {
+    let html = '';
+    sections.forEach(({ source, items: list }) => {
+      const pool = list.filter(filter);
+      if (!source.byGenre) { html += row(source.label, pool); return; }
+      [...new Set(pool.map((t) => t.genre))].forEach((g) => {
+        html += row(g, pool.filter((t) => t.genre === g));
+      });
+    });
+    return html;
+  }
+
+  function renderTv(q) {
+    const live = allItems().filter((t) => t.live);
+    const groups = [...new Set(live.map((t) => t.genre))];
+    $('tvbar').innerHTML = ['', ...groups].map((g) =>
+      `<button class="chip-btn${g === tvGroup ? ' is-on' : ''}" data-group="${esc(g)}">${g ? esc(g) : 'Todos'}</button>`).join('');
+    $('tvbar').hidden = !live.length;
+
+    const shown = live.filter((t) => (!tvGroup || t.genre === tvGroup) && (!q || t.title.toLowerCase().includes(q)));
+    const grid = (title, list) => list.length
+      ? `<section class="row"><h2>${esc(title)} <small>${list.length}</small></h2><div class="grid">${list.map(card).join('')}</div></section>` : '';
+    let html = '';
+    tvOrder = [];
+    if (!q && !tvGroup) {
+      const last = byId(store.get('lastTv', ''));
+      html += grid('Último canal', last ? [last] : []);
+      html += grid('Favoritos', live.filter((t) => favs.has(t.id)));
+    }
+    [...new Set(shown.map((t) => t.genre))].forEach((g) => {
+      const list = shown.filter((t) => t.genre === g);
+      tvOrder.push(...list.map((t) => t.id));
+      html += grid(g, list);
+    });
+    rows.innerHTML = html;
+    empty.textContent = live.length ? 'Nenhum canal encontrado.'
+      : (sections.length ? 'Nenhum canal. Adicione uma lista em ⚙ > Listas de TV.' : 'Carregando canais…');
+    empty.hidden = !!shown.length;
+  }
+
   function render() {
     const q = search.value.trim().toLowerCase();
-    const items = allItems();
+    hero.hidden = true;
+    $('tvbar').hidden = true;
+    if (view === 'tv') return renderTv(q);
+
+    const items = allItems().filter((t) => !t.live);
+    const scope = view === 'movies' ? isMovie : view === 'series' ? isSeries : () => true;
     let html = '';
     let any = false;
-    hero.hidden = true;
 
     if (q) {
-      const local = items.filter((t) => (t.title + ' ' + t.genre).toLowerCase().includes(q));
-      const hits = [...local, ...remote.filter((r) => !local.some((l) => l.id === r.id))];
+      const local = items.filter((t) => scope(t) && (t.title + ' ' + t.genre).toLowerCase().includes(q));
+      const hits = [...local, ...remote.filter((r) => scope(r) && !local.some((l) => l.id === r.id))];
       html = row(`Resultados para “${search.value.trim()}”`, hits);
       any = hits.length > 0;
       empty.textContent = q.length >= 3 && searching ? 'Buscando…' : 'Nenhum título encontrado.';
@@ -101,16 +152,11 @@
       any = mine.length > 0;
       empty.textContent = 'Sua lista está vazia. Abra um título e adicione à lista.';
     } else {
-      renderHero();
-      html += row('Continuar assistindo', items.filter((t) => progress[t.id]?.pct > 0 && progress[t.id].pct < 98));
-      sections.forEach(({ source, items: list }) => {
-        if (!source.byGenre) { html += row(source.label, list); return; }
-        [...new Set(list.map((t) => t.genre))].forEach((g) => {
-          html += row(g, list.filter((t) => t.genre === g));
-        });
-      });
-      any = items.length > 0;
-      empty.textContent = 'Carregando catálogo…';
+      if (view === 'home') renderHero();
+      html += row('Continuar assistindo', items.filter((t) => scope(t) && progress[t.id]?.pct > 0 && progress[t.id].pct < 98));
+      html += genreRows((t) => !t.live && scope(t));
+      any = items.some(scope);
+      empty.textContent = sections.length ? 'Nada por aqui ainda.' : 'Carregando catálogo…';
     }
     rows.innerHTML = html;
     empty.hidden = any;
@@ -127,7 +173,7 @@
       const cur = sections.find((x) => x.source === source);
       if (cur) cur.items = [...cur.items, ...items];
       else sections = [...sections, { source, items }].sort((x, y) => SOURCES.indexOf(x.source) - SOURCES.indexOf(y.source));
-      if (view === 'home' && !search.value) render();
+      if (!search.value) render();
     };
     // Cada fonte (e cada fileira do Archive) aparece assim que carrega.
     await Promise.all(SOURCES.map(async (source) => {
@@ -135,7 +181,7 @@
     }));
     if (!sections.length) { empty.textContent = 'Nenhum título disponível.'; return; }
     render();
-    Tmdb.enrich(allItems(), () => { if (view === 'home' && !search.value) render(); });
+    Tmdb.enrich(allItems(), () => { if (!search.value) render(); });
   }
 
   function toggleList(id) {
@@ -215,11 +261,36 @@
   }
   $('det-close').addEventListener('click', closeDetail);
 
+  // Para a reprodução atual sem fechar a janela (usado ao trocar de canal).
+  function teardown() {
+    saveProgress();
+    video.pause();
+    if (hls) { hls.destroy(); hls = null; }
+    video.removeAttribute('src');
+    video.load();
+  }
+
+  function toggleFav(id) {
+    favs.has(id) ? favs.delete(id) : favs.add(id);
+    store.set('favs', [...favs]);
+    render();
+  }
+
+  function zap(dir) {
+    if (!current || !current.live) return;
+    const order = tvOrder.length ? tvOrder : allItems().filter((t) => t.live).map((t) => t.id);
+    const i = order.indexOf(current.id);
+    openPlayer(order[(i + dir + order.length) % order.length]);
+  }
+
   async function openPlayer(id) {
     const t = byId(id);
     if (!t) return;
     if (t.source === 'tmdb') return openDetail(t);
+    if (current) teardown();
     current = t;
+    $('zap').hidden = !t.live;
+    if (t.live) store.set('lastTv', t.id);
     $('player-title').textContent = t.title;
     $('player-desc').textContent = t.desc;
     modal.hidden = false;
@@ -367,6 +438,12 @@
 
   // Eventos
   document.addEventListener('click', (e) => {
+    const fav = e.target.closest('[data-fav]');
+    if (fav) return toggleFav(fav.dataset.fav);
+    const grp = e.target.closest('[data-group]');
+    if (grp) { tvGroup = grp.dataset.group; return render(); }
+    const mi = e.target.closest('.menu-item');
+    if (mi) $('menu').open = false;
     const c = e.target.closest('.card');
     if (c) return openPlayer(c.dataset.id);
     const play = e.target.closest('[data-play]');
@@ -381,16 +458,22 @@
     if (e.target === det) closeDetail();
   });
   $('player-close').addEventListener('click', closePlayer);
+  $('zap-prev').addEventListener('click', () => zap(-1));
+  $('zap-next').addEventListener('click', () => zap(1));
   document.addEventListener('keydown', (e) => {
+    if (!modal.hidden && current && current.live && (e.key === 'PageUp' || e.key === 'PageDown')) {
+      e.preventDefault(); return zap(e.key === 'PageUp' ? -1 : 1);
+    }
     if (e.key !== 'Escape') return;
     if (!det.hidden) closeDetail(); else if (!tv.hidden) tv.hidden = true; else if (!dlg.hidden) dlg.hidden = true; else if (!tm.hidden) tm.hidden = true; else if (!ac.hidden) ac.hidden = true; else closePlayer();
   });
   video.addEventListener('timeupdate', () => { if (Math.round(video.currentTime) % 5 === 0) saveProgress(); });
   video.addEventListener('pause', saveProgress);
 
-  document.querySelectorAll('.tab').forEach((b) => b.addEventListener('click', () => {
+  document.querySelectorAll('.tab[data-view]').forEach((b) => b.addEventListener('click', () => {
     view = b.dataset.view;
     search.value = '';
+    remote = [];
     document.querySelectorAll('.tab').forEach((x) => x.classList.toggle('is-active', x === b));
     render();
   }));
@@ -398,7 +481,7 @@
     clearTimeout(searchTimer);
     const q = search.value.trim();
     remote = [];
-    searching = q.length >= 3;
+    searching = q.length >= 3 && view !== 'tv';
     render();
     if (!searching) return;
     searchTimer = setTimeout(async () => {

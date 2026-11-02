@@ -4,7 +4,6 @@
 const IptvSource = (() => {
   const KEY = 'rs:iptv';
   const DEFAULT = [{ name: 'Canais abertos do Brasil', url: 'https://iptv-org.github.io/iptv/countries/br.m3u' }];
-  const PER_GROUP = 80;
 
   const read = () => { try { return JSON.parse(localStorage.getItem(KEY)); } catch { return null; } };
   const write = (v) => { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch { /* ignora */ } };
@@ -51,9 +50,7 @@ const IptvSource = (() => {
       const res = await fetch(l.url);
       if (!res.ok) throw new Error(l.name + ' ' + res.status);
       const items = parse(await res.text(), l.name).filter((t) => !seen.has(t.id) && seen.add(t.id));
-      // Limita cada grupo para a tela inicial não ficar enorme; a busca encontra todos.
-      const counts = {};
-      onPart && onPart(items.filter((t) => (counts[t.genre] = (counts[t.genre] || 0) + 1) <= PER_GROUP));
+      onPart && onPart(items);
     }));
     return [];
   }
