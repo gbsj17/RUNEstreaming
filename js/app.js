@@ -157,11 +157,16 @@
   }
 
   async function attach({ url, hls: isHls }) {
-    if (!isHls || video.canPlayType('application/vnd.apple.mpegurl')) { video.src = url; return; }
-    await loadHls();
+    if (!isHls) { video.src = url; return; }
+    // Prefere hls.js (MSE); o HLS nativo fica para o Safari/iOS, onde o hls.js não roda.
+    await loadHls().catch(() => {});
+    if (!(window.Hls && Hls.isSupported())) { video.src = url; return; }
     hls = new Hls();
     hls.loadSource(url);
     hls.attachMedia(video);
+    hls.on(Hls.Events.ERROR, (_, data) => {
+      if (data.fatal) $('player-desc').textContent = 'Este canal não respondeu (offline, bloqueado ou sem CORS).';
+    });
   }
 
   // Detalhes de títulos do TMDB: trailer e onde assistir legalmente (o vídeo completo não é hospedado aqui).
