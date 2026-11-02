@@ -430,7 +430,7 @@
   const tv = $('tv-modal');
   const renderLists = () => {
     $('tv-lists').innerHTML = IptvSource.lists().map((l, i) =>
-      `<li><span>${esc(l.name)}</span><button class="btn" data-rm="${i}" type="button">Remover</button></li>`).join('')
+      `<li><span>${esc(l.name)}${l.epg ? ' · EPG' : ''}${l.logos ? ' · logos' : ''}</span><button class="btn" data-rm="${i}" type="button">Remover</button></li>`).join('')
       || '<li class="hint">Nenhuma lista.</li>';
     const have = new Set(IptvSource.lists().map((l) => l.url));
     $('tv-presets').innerHTML = IptvSource.PRESETS.filter((p) => !have.has(p.url)).map((p, i) =>
@@ -454,7 +454,7 @@
   $('tv-form').addEventListener('submit', (e) => {
     e.preventDefault();
     const f = e.target;
-    IptvSource.add(f.name.value, f.url.value);
+    IptvSource.add(f.name.value, f.url.value, f.epg.value, f.logos.value);
     f.reset(); renderLists(); loadCatalog();
   });
 
