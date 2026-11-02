@@ -5,6 +5,7 @@ const ArchiveSource = (() => {
 
   // Fileira -> consulta. O Archive é grande; cada fileira traz os mais assistidos.
   const ROWS = {
+    'Cinema em português': 'collection:feature_films AND language:(Portuguese OR por)',
     'Clássicos': 'collection:feature_films',
     'Animação': 'collection:animationandcartoons',
     'Comédia': 'collection:feature_films AND subject:(comedy)',

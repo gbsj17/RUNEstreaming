@@ -1,6 +1,11 @@
 # Novidades (patch notes)
 
-Versão atual: **1.3.0**. A mesma lista aparece no site em `docs.html#novidades`.
+Versão atual: **1.4.0**. A mesma lista aparece no site em `docs.html#novidades`.
+
+## 1.4.0
+
+- **Pluto TV pelo proxy**: a lista verificada agora inclui 108 canais oficiais e gratuitos da Pluto TV em português (Cine Terror, Cine Drama, Cine Clássicos, Cine Romance, CSI: Miami, Star Trek, MacGyver, NCIS, MTV, Nickelodeon, anime e mais). Eles não liberam CORS, então tocam pelo proxy do projeto; o teste diário confirma que cada um responde.
+- Nova fileira **Cinema em português** no catálogo (filmes em português do Internet Archive).
 
 ## 1.3.0
 

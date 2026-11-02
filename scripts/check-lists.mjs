@@ -11,6 +11,9 @@ const SOURCES = [
   'https://raw.githubusercontent.com/Free-TV/IPTV/master/playlists/playlist_brazil.m3u8',
   new URL('../lists/brasil-iptvcat.m3u', import.meta.url),
 ];
+// Serviços gratuitos oficiais (FAST) que não liberam CORS: testados e tocados pelo proxy do projeto.
+const PROXY = process.env.PROXY_URL || 'https://runestreaming-proxy.genivalbsj17.workers.dev';
+const OFFICIAL = /(^|\.)(pluto\.tv|jmp2\.uk|wurl\.com|amagi\.tv|frequency\.stream|samsungcloud\.tv|plex\.tv|xumo\.com|tubitv\.com)$/i;
 const TIMEOUT = 9000;
 const CONCURRENCY = 25;
 
@@ -70,11 +73,17 @@ let next = 0;
 await Promise.all(Array.from({ length: CONCURRENCY }, async () => {
   while (next < all.length) {
     const c = all[next++];
-    if (await works(c)) good.push(c);
+    if (await works(c)) { good.push(c); continue; }
+    // Serviço oficial sem CORS: testa pelo proxy e marca o canal com x-proxy="1" para o site tocar por ele.
+    let host = '';
+    try { host = new URL(c.url).hostname; } catch { /* ignora */ }
+    if (OFFICIAL.test(host) && await works({ url: `${PROXY}/?url=${encodeURIComponent(c.url)}` })) {
+      good.push({ ...c, info: c.info.replace('#EXTINF:', '#EXTINF:').replace(/^(#EXTINF:\S+)/, '$1 x-proxy="1"') });
+    }
   }
 }));
 
 good.sort((a, b) => a.info.split(',').pop().localeCompare(b.info.split(',').pop()));
 const body = ['#EXTM3U', ...good.flatMap((c) => [c.info, c.url])].join('\n') + '\n';
 await writeFile(new URL('../lists/brasil-verificados.m3u', import.meta.url), body);
-console.log(`funcionam: ${good.length} de ${all.length}`);
+console.log(`funcionam: ${good.length} de ${all.length} (${good.filter((c) => c.info.includes('x-proxy')).length} pelo proxy)`);

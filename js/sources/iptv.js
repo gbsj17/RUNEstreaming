@@ -77,6 +77,7 @@ const IptvSource = (() => {
       if (!/^https:\/\//i.test(url) && !(proxy() && /^http:\/\//i.test(url))) continue;   // http:// só passa pelo proxy
       const name = line.slice(line.lastIndexOf(',') + 1).trim() || 'Canal';
       const group = (attr(line, 'group-title').split(';')[0] || listName).trim();
+      const proxied = attr(line, 'x-proxy') === '1' && proxy();   // serviço oficial sem CORS: toca pelo proxy
       out.push({
         id: 'tv:' + url,
         title: name,
@@ -88,7 +89,7 @@ const IptvSource = (() => {
         hue: (name.charCodeAt(0) * 37) % 360,
         source: 'iptv',
         live: true,
-        resolve: async () => ({ url: via(url), hls: true }),
+        resolve: async () => ({ url: proxied ? `${proxy()}/?url=${encodeURIComponent(url)}` : via(url), hls: true }),
       });
     }
     return out;
