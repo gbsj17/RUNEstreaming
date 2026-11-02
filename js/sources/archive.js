@@ -21,7 +21,7 @@ const ArchiveSource = (() => {
 
   async function load() {
     const params = new URLSearchParams({
-      q: 'collection:feature_films AND mediatype:movies',
+      q: 'collection:feature_films AND mediatype:movies AND format:(h.264)',
       sort: 'downloads desc',
       rows: PAGE,
       output: 'json',
