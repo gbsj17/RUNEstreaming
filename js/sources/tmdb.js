@@ -1,5 +1,4 @@
-// Capas e sinopses reais via TMDB (opcional). A chave é pessoal e fica só no localStorage do navegador.
-// Crie uma chave grátis em themoviedb.org > Configurações > API (chave "v3").
+// Capas e sinopses reais via TMDB. Usa a chave de js/config.js, ou a que o usuário salvar no botão "Capas".
 const Tmdb = (() => {
   const KEY = 'rs:tmdb-key';
   const CACHE = 'rs:tmdb-cache';
@@ -11,7 +10,8 @@ const Tmdb = (() => {
   let cache = {};
   try { cache = JSON.parse(get(CACHE)) || {}; } catch { cache = {}; }
 
-  const apiKey = () => get(KEY) || '';
+  // Chave salva pelo usuário (botão "Capas") ou a padrão de js/config.js.
+  const apiKey = () => get(KEY) || (window.RS_CONFIG && window.RS_CONFIG.tmdbKey) || '';
   const setKey = (k) => {
     try { k ? localStorage.setItem(KEY, k.trim()) : localStorage.removeItem(KEY); } catch { /* ignora */ }
   };
