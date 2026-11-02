@@ -92,17 +92,33 @@ const IptvSource = (() => {
     return out;
   }
 
+  // Resultado do último carregamento de cada lista, para mostrar na tela o que deu errado.
+  const status = {};
+
   async function load(onPart) {
     const seen = new Set();
     await Promise.allSettled(lists().map(async (l) => {
-      const res = await fetch(via(l.url));
-      if (!res.ok) throw new Error(l.name + ' ' + res.status);
-      const items = parse(await res.text(), l.name, l.logos).filter((t) => !seen.has(t.id) && seen.add(t.id));
-      onPart && onPart(items);
-      if (l.epg) applyEpg(l.epg, items).catch((err) => console.warn('EPG', err));
+      status[l.url] = 'carregando…';
+      try {
+        if (/^http:/i.test(l.url) && !proxy()) throw new Error('o link é http:// e o navegador bloqueia numa página HTTPS (precisa do proxy em worker/ ou de um link https://)');
+        const res = await fetch(via(l.url));
+        if (!res.ok) throw new Error('o servidor respondeu ' + res.status);
+        const text = await res.text();
+        if (!text.includes('#EXTINF')) throw new Error('o link não devolveu uma lista M3U (pode ser página, link encurtado ou lista fora do ar)');
+        const total = (text.match(/#EXTINF/g) || []).length;
+        const items = parse(text, l.name, l.logos).filter((t) => !seen.has(t.id) && seen.add(t.id));
+        status[l.url] = items.length
+          ? `${items.length} canais` + (total > items.length ? ` (${total - items.length} descartados: http:// ou repetidos)` : '')
+          : `0 canais tocáveis (${total} na lista, todos http://, que o navegador bloqueia)`;
+        onPart && onPart(items);
+        if (l.epg) applyEpg(l.epg, items).catch((err) => console.warn('EPG', err));
+      } catch (err) {
+        status[l.url] = 'erro: ' + (err.message === 'Failed to fetch' ? 'não foi possível acessar o link (offline, CORS ou link http:// encurtado)' : err.message);
+        throw err;
+      }
     }));
     return [];
   }
 
-  return { label: 'TV ao vivo', byGenre: true, load, lists, add, remove, reset, PRESETS };
+  return { label: 'TV ao vivo', byGenre: true, load, status, lists, add, remove, reset, PRESETS };
 })();

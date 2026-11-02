@@ -125,7 +125,7 @@
     });
     rows.innerHTML = html;
     empty.textContent = live.length ? 'Nenhum canal encontrado.'
-      : (sections.length ? 'Nenhum canal. Adicione uma lista em ⚙ > Listas de TV.' : 'Carregando canais…');
+      : (sections.length ? 'Nenhum canal. ' + (Object.values(IptvSource.status).filter((v) => v.startsWith('erro') || v.startsWith('0')).join(' | ') || 'Adicione uma lista em ⚙ > Listas de TV.') : 'Carregando canais…');
     empty.hidden = !!shown.length;
   }
 
@@ -430,7 +430,7 @@
   const tv = $('tv-modal');
   const renderLists = () => {
     $('tv-lists').innerHTML = IptvSource.lists().map((l, i) =>
-      `<li><span>${esc(l.name)}${l.epg ? ' · EPG' : ''}${l.logos ? ' · logos' : ''}</span><button class="btn" data-rm="${i}" type="button">Remover</button></li>`).join('')
+      `<li><span>${esc(l.name)}${l.epg ? ' · EPG' : ''}${l.logos ? ' · logos' : ''}<br><small class="hint">${esc(IptvSource.status[l.url] || '')}</small></span><button class="btn" data-rm="${i}" type="button">Remover</button></li>`).join('')
       || '<li class="hint">Nenhuma lista.</li>';
     const have = new Set(IptvSource.lists().map((l) => l.url));
     $('tv-presets').innerHTML = IptvSource.PRESETS.filter((p) => !have.has(p.url)).map((p, i) =>
