@@ -33,31 +33,54 @@ const ArchiveSource = (() => {
     return { url: `https://archive.org/download/${encodeURIComponent(identifier)}/${encodeURIComponent(best.name)}` };
   }
 
-  async function query(q, genre, rows = PAGE) {
+  const TTL = 6 * 3600 * 1000;
+  const cacheGet = (k) => {
+    try { const c = JSON.parse(localStorage.getItem('rs:ia:' + k)); return c && Date.now() - c.t < TTL ? c.docs : null; } catch { return null; }
+  };
+  const cacheSet = (k, docs) => {
+    try { localStorage.setItem('rs:ia:' + k, JSON.stringify({ t: Date.now(), docs })); } catch { /* ignora */ }
+  };
+
+  const toItem = (d, genre) => ({
+    id: 'ia:' + d.identifier,
+    title: text(d.title) || d.identifier,
+    year: parseInt(d.year, 10) || '',
+    genre,
+    desc: text(d.description).slice(0, 260) || 'Título de domínio público do Internet Archive.',
+    poster: `https://archive.org/services/img/${encodeURIComponent(d.identifier)}`,
+    hue: (d.identifier.charCodeAt(0) * 37) % 360,
+    source: 'archive',
+    resolve: () => resolve(d.identifier),
+  });
+
+  async function fetchDocs(q, rows) {
     const params = new URLSearchParams({ q: `${BASE} AND ${q}`, sort: 'downloads desc', rows, output: 'json' });
     ['identifier', 'title', 'description', 'year'].forEach((f) => params.append('fl[]', f));
     const res = await fetch(`${SEARCH}?${params}`);
     if (!res.ok) throw new Error('busca ' + res.status);
-    const { response } = await res.json();
-    return response.docs.map((d) => ({
-      id: 'ia:' + d.identifier,
-      title: text(d.title) || d.identifier,
-      year: parseInt(d.year, 10) || '',
-      genre,
-      desc: text(d.description).slice(0, 260) || 'Título de domínio público do Internet Archive.',
-      poster: `https://archive.org/services/img/${encodeURIComponent(d.identifier)}`,
-      hue: (d.identifier.charCodeAt(0) * 37) % 360,
-      source: 'archive',
-      resolve: () => resolve(d.identifier),
-    }));
+    return (await res.json()).response.docs;
   }
 
-  async function load() {
-    const lists = await Promise.allSettled(Object.entries(ROWS).map(([genre, q]) => query(q, genre)));
+  async function query(q, genre, rows = PAGE, cacheKey) {
+    let docs = cacheKey && cacheGet(cacheKey);
+    if (!docs) {
+      docs = await fetchDocs(q, rows);
+      if (cacheKey) cacheSet(cacheKey, docs);
+    }
+    return docs.map((d) => toItem(d, genre));
+  }
+
+  // onPart recebe cada fileira assim que ela chega; o retorno traz tudo de uma vez.
+  async function load(onPart) {
     const seen = new Set();
-    // Um título aparece só na primeira fileira em que entrou.
-    return lists.flatMap((r) => (r.status === 'fulfilled' ? r.value : []))
-      .filter((t) => !seen.has(t.id) && seen.add(t.id));
+    const all = [];
+    await Promise.allSettled(Object.entries(ROWS).map(async ([genre, q]) => {
+      // Um título aparece só na primeira fileira em que entrou.
+      const part = (await query(q, genre, PAGE, genre)).filter((t) => !seen.has(t.id) && seen.add(t.id));
+      all.push(...part);
+      onPart && onPart(part);
+    }));
+    return onPart ? [] : all;
   }
 
   const escapeQ = (s) => s.replace(/["\\()\[\]:]/g, ' ').trim();

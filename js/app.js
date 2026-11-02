@@ -106,12 +106,16 @@
     $('jf-btn').textContent = JellyfinSource.isConnected() ? 'Jellyfin ✓' : 'Conectar Jellyfin';
     sections = [];
     // Cada fonte aparece assim que carrega, sem esperar as mais lentas.
-    await Promise.all(SOURCES.map(async (source) => {
-      let items = [];
-      try { items = await source.load(); } catch (err) { console.warn(source.label, err); }
+    const add = (source, items) => {
       if (!items.length) return;
-      sections = [...sections, { source, items }].sort((a, b) => SOURCES.indexOf(a.source) - SOURCES.indexOf(b.source));
+      const cur = sections.find((x) => x.source === source);
+      if (cur) cur.items = [...cur.items, ...items];
+      else sections = [...sections, { source, items }].sort((x, y) => SOURCES.indexOf(x.source) - SOURCES.indexOf(y.source));
       if (view === 'home' && !search.value) render();
+    };
+    // Cada fonte (e cada fileira do Archive) aparece assim que carrega.
+    await Promise.all(SOURCES.map(async (source) => {
+      try { add(source, await source.load((part) => add(source, part))); } catch (err) { console.warn(source.label, err); }
     }));
     if (!sections.length) { empty.textContent = 'Nenhum título disponível.'; return; }
     render();
