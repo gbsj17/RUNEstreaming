@@ -21,9 +21,13 @@ const Tmdb = (() => {
     .replace(/\b(complete|full movie|hd|1080p|720p|remastered)\b/gi, ' ').replace(/\s+/g, ' ').trim();
 
   async function lookup(item) {
-    const q = new URLSearchParams({ api_key: apiKey(), language: 'pt-BR', query: clean(item.title) });
+    // Aceita a chave v3 (curta) ou o Token de Leitura v4 (começa com "eyJ").
+    const key = apiKey();
+    const bearer = key.startsWith('eyJ');
+    const q = new URLSearchParams({ language: 'pt-BR', query: clean(item.title) });
+    if (!bearer) q.set('api_key', key);
     if (item.year) q.set('year', item.year);
-    const res = await fetch(`https://api.themoviedb.org/3/search/movie?${q}`);
+    const res = await fetch(`https://api.themoviedb.org/3/search/movie?${q}`, bearer ? { headers: { Authorization: 'Bearer ' + key } } : undefined);
     if (res.status === 401) throw new Error('chave inválida');
     if (!res.ok) throw new Error('tmdb ' + res.status);
     const hit = (await res.json()).results.find((r) => r.poster_path);
