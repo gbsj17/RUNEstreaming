@@ -31,15 +31,23 @@ const ArchiveSource = (() => {
 
   // O arquivo .mp4 só é descoberto na hora de assistir (um item pode ter vários arquivos).
   async function resolve(identifier) {
-    const res = await fetch(`https://archive.org/metadata/${encodeURIComponent(identifier)}`);
-    if (!res.ok) throw new Error('metadata ' + res.status);
-    const { files = [] } = await res.json();
+    let data;
+    for (let i = 0; i < 3 && !data; i++) {       // o servidor às vezes responde 503 na primeira tentativa
+      try {
+        const res = await fetch(`https://archive.org/metadata/${encodeURIComponent(identifier)}`);
+        if (res.ok) data = await res.json();
+      } catch { /* tenta de novo */ }
+      if (!data) await new Promise((r) => setTimeout(r, 800));
+    }
+    if (!data) throw new Error('metadata');
+    const { files = [] } = data;
     const mp4s = files.filter((f) => /\.mp4$/i.test(f.name));
     // Prefere as versões otimizadas para streaming; o original (MPEG4) pode ter centenas de MB e demora a começar.
     const rank = (f) => { const i = ['h.264 IA', 'h.264', '512Kb MPEG4'].indexOf(f.format); return i < 0 ? 9 : i; };
-    const best = [...mp4s].sort((a, b) => rank(a) - rank(b) || (+a.size || 0) - (+b.size || 0))[0];
-    if (!best) throw new Error('sem mp4');
-    return { url: `https://archive.org/download/${encodeURIComponent(identifier)}/${encodeURIComponent(best.name)}` };
+    const sorted = [...mp4s].sort((a, b) => rank(a) - rank(b) || (+a.size || 0) - (+b.size || 0));
+    if (!sorted.length) throw new Error('sem mp4');
+    const urls = sorted.map((f) => `https://archive.org/download/${encodeURIComponent(identifier)}/${encodeURIComponent(f.name)}`);
+    return { url: urls[0], alts: urls.slice(1, 4) };   // alternativas, caso o primeiro arquivo falhe
   }
 
   const TTL = 6 * 3600 * 1000;

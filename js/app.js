@@ -203,8 +203,11 @@
     });
   }
 
+  let watchdog = 0;
+  let alts = [];
+
   async function attach({ url, hls: isHls }) {
-    if (!isHls) { video.src = url; return; }
+    if (!isHls) { video.src = url; video.load(); return; }
     // Prefere hls.js (MSE); o HLS nativo fica para o Safari/iOS, onde o hls.js não roda.
     await loadHls().catch(() => {});
     if (!(window.Hls && Hls.isSupported())) { video.src = url; return; }
@@ -291,6 +294,23 @@
     openPlayer(order[(i + dir + order.length) % order.length]);
   }
 
+  // Troca para outro arquivo do mesmo título quando o atual falha; sem alternativas, oferece tentar de novo.
+  function fallback() {
+    clearTimeout(watchdog);
+    if (!current || current.live) return;
+    const next = alts.shift();
+    if (next) {
+      $('player-desc').textContent = 'Esse arquivo não respondeu, tentando outra versão…';
+      video.src = next;
+      video.load();
+      video.play().catch(() => {});
+      watchdog = setTimeout(() => { if (video.readyState < 3) fallback(); }, 40000);
+    } else {
+      $('player-desc').textContent = 'O servidor do Internet Archive não entregou este vídeo agora. Toque em “Tentar de novo” ou escolha outro título.';
+      $('retry').hidden = false;
+    }
+  }
+
   async function openPlayer(id) {
     const t = byId(id);
     if (!t) return;
@@ -303,14 +323,24 @@
     $('player-desc').textContent = t.live ? t.desc : 'Carregando… o servidor do Internet Archive às vezes leva alguns segundos para começar.';
     modal.hidden = false;
     document.body.classList.add('no-scroll');
+    $('retry').hidden = true;
+    clearTimeout(watchdog);
+    let src;
     try {
-      await attach(t.resolve ? await t.resolve() : { url: t.video });
+      src = t.resolve ? await t.resolve() : { url: t.video };
+      if (current !== t) return; // fechado enquanto carregava
+      alts = src.alts || [];
+      await attach(src);
     } catch (err) {
       console.warn(err);
-      $('player-desc').textContent = 'Não foi possível carregar este vídeo.';
+      if (current === t) { $('player-desc').textContent = 'Não foi possível obter este vídeo agora (o servidor não respondeu).'; $('retry').hidden = false; }
       return;
     }
     if (current !== t) return; // fechado enquanto carregava
+    if (!t.live) {
+      // Se não começar em 40s, tenta outro arquivo do mesmo título.
+      watchdog = setTimeout(() => { if (current === t && video.readyState < 3) fallback(); }, 40000);
+    }
     const saved = progress[id];
     video.addEventListener('loadedmetadata', () => {
       if (saved && saved.pct < 98) video.currentTime = (saved.pct / 100) * video.duration;
@@ -487,10 +517,15 @@
   });
   video.addEventListener('timeupdate', () => { if (Math.round(video.currentTime) % 5 === 0) saveProgress(); });
   video.addEventListener('pause', saveProgress);
-  video.addEventListener('playing', () => { zapTries = 0; if (current) $('player-desc').textContent = current.desc; });
-  video.addEventListener('error', () => {
-    if (current && !current.live) $('player-desc').textContent = 'Este arquivo não pôde ser carregado agora. Tente de novo em instantes ou escolha outro título.';
+  video.addEventListener('playing', () => { clearTimeout(watchdog); $('retry').hidden = true; zapTries = 0; if (current) $('player-desc').textContent = current.desc; });
+  video.addEventListener('error', () => { if (video.getAttribute('src')) fallback(); });
+  video.addEventListener('progress', () => {
+    if (current && !current.live && video.readyState < 3 && video.buffered.length && video.duration) {
+      const pct = Math.round((video.buffered.end(video.buffered.length - 1) / video.duration) * 100);
+      $('player-desc').textContent = `Carregando… ${pct}% (o Internet Archive pode demorar alguns segundos)`;
+    }
   });
+  $('retry').addEventListener('click', () => { if (current) { const id = current.id; teardown(); current = null; openPlayer(id); } });
 
   document.querySelectorAll('.tab[data-view]').forEach((b) => b.addEventListener('click', () => {
     view = b.dataset.view;
