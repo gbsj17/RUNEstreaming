@@ -35,6 +35,8 @@ const IptvSource = (() => {
   const remove = (i) => write(lists().filter((_, k) => k !== i));
   const reset = () => write(DEFAULT);
 
+  const NO_CORS = /^https:\/\/([^/]*\.)?(pluto\.tv|jmp2\.uk)\//i;
+
   const attr = (line, name) => {
     const m = line.match(new RegExp(name + '="([^"]*)"'));
     return m ? m[1] : '';
@@ -77,7 +79,8 @@ const IptvSource = (() => {
       if (!/^https:\/\//i.test(url) && !(proxy() && /^http:\/\//i.test(url))) continue;   // http:// só passa pelo proxy
       const name = line.slice(line.lastIndexOf(',') + 1).trim() || 'Canal';
       const group = (attr(line, 'group-title').split(';')[0] || listName).trim();
-      const proxied = attr(line, 'x-proxy') === '1' && proxy();   // serviço oficial sem CORS: toca pelo proxy
+      // Serviços oficiais sem CORS (Pluto TV): tocam pelo proxy, mesmo que a lista não marque o canal.
+      const proxied = (attr(line, 'x-proxy') === '1' || NO_CORS.test(url)) && proxy();
       out.push({
         id: 'tv:' + url,
         title: name,
