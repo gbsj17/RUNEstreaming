@@ -35,7 +35,9 @@ const ArchiveSource = (() => {
     if (!res.ok) throw new Error('metadata ' + res.status);
     const { files = [] } = await res.json();
     const mp4s = files.filter((f) => /\.mp4$/i.test(f.name));
-    const best = mp4s.find((f) => f.format === 'h.264') || mp4s[0];
+    // Prefere as versões otimizadas para streaming; o original (MPEG4) pode ter centenas de MB e demora a começar.
+    const rank = (f) => { const i = ['h.264 IA', 'h.264', '512Kb MPEG4'].indexOf(f.format); return i < 0 ? 9 : i; };
+    const best = [...mp4s].sort((a, b) => rank(a) - rank(b) || (+a.size || 0) - (+b.size || 0))[0];
     if (!best) throw new Error('sem mp4');
     return { url: `https://archive.org/download/${encodeURIComponent(identifier)}/${encodeURIComponent(best.name)}` };
   }
